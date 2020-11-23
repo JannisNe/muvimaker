@@ -9,14 +9,7 @@ class InfoFrame(tk.LabelFrame):
 
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent.master, text='Info', labelanchor='n')
-
         self.parent = parent
-        # self.audio_filename = tk.StringVar()
-        # if self.parent.project_handler:
-        #     self.audio_filename.set(str(self.parent.project_handler.sound_filename))
-        #
-        # self.video_output_filename = tk.StringVar()
-
         self._setup_widgets()
 
     def _setup_widgets(self):
