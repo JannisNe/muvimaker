@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as font
 import _tkinter
 import os
 from multiprocessing import Process, Manager
@@ -8,6 +9,7 @@ from muvi_maker.editor.dialogues import ScratchDirDialogue
 from muvi_maker.editor.menubar import Menubar
 from muvi_maker.editor.info_frame import InfoFrame
 from muvi_maker.editor.logging_frame import LoggingFrame
+from muvi_maker.editor.parameters_frame import ParametersFrame
 from muvi_maker.core.project import ProjectHandler
 
 
@@ -95,10 +97,23 @@ class Editor(tk.Frame):
         self.add_widget('logging_frame', logging_frame)
         logging_frame.grid(row=10, column=0)
 
+        parameters_frame = ParametersFrame(self.master)
+        self.add_widget('parameters_frame', parameters_frame)
+        parameters_frame.grid(row=1, column=0)
+
+        analyse_button = tk.Button(self.master, text='analyse', height=5, width=10, state=self.active.get(),
+                                   command=self.analyse)
+        analyse_button.grid(row=9, column=10)
+        self.add_widget('analyse_button', analyse_button)
+
         make_video_button = tk.Button(self.master, text='make video', height=5, width=10, state=self.active.get(),
                                       command=self.make_video)
+        make_video_button_font = font.Font(weight='bold')
+        make_video_button['font'] = make_video_button_font
         make_video_button.grid(row=10, column=10)
         self.add_widget('make_video_button', make_video_button)
+
+    # ---------------------------------    ProjectHandler calls    --------------------------------- #
 
     def make_video(self):
         if not self.project_handler.sound_filename:
@@ -108,31 +123,38 @@ class Editor(tk.Frame):
             vn = self.project_handler.make_video()
             self.videofile = vn
 
-    def make_video_multiprocess(self):
+    def analyse(self):
         if not self.project_handler.sound_filename:
             logger.error(f'No sound file!')
 
         else:
-            with Manager() as manager:
+            self.project_handler.analyse(framerate=self.widgets['parameters_frame'].fps)
 
-                p1 = Process(target=LoggingWindow.multiprocess_wrapping)
-                p1.start()
-
-                logger.debug('started logging window')
-
-                res = manager.dict()
-                self.project_handler.save_me()
-                fn = self.project_handler.filename
-                p2 = Process(target=ProjectHandler.multiprocess_wrapping,
-                             args=(fn, res, main_queue, logger.getEffectiveLevel()))
-                p2.start()
-
-                # p1.join()
-                p2.join()
-                # video_filename = self.project_handler.make_video()
-                # self.videofile = video_filename
-
-                self.videofile = res['video_filename']
+    # def make_video_multiprocess(self):
+    #     if not self.project_handler.sound_filename:
+    #         logger.error(f'No sound file!')
+    #
+    #     else:
+    #         with Manager() as manager:
+    #
+    #             p1 = Process(target=LoggingWindow.multiprocess_wrapping)
+    #             p1.start()
+    #
+    #             logger.debug('started logging window')
+    #
+    #             res = manager.dict()
+    #             self.project_handler.save_me()
+    #             fn = self.project_handler.filename
+    #             p2 = Process(target=ProjectHandler.multiprocess_wrapping,
+    #                          args=(fn, res, main_queue, logger.getEffectiveLevel()))
+    #             p2.start()
+    #
+    #             # p1.join()
+    #             p2.join()
+    #             # video_filename = self.project_handler.make_video()
+    #             # self.videofile = video_filename
+    #
+    #             self.videofile = res['video_filename']
 
     def check_scratch(self):
         scr = os.environ.get(mv_scratch_key, "None")
