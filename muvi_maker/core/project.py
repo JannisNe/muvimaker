@@ -1,8 +1,7 @@
 import os
 import shutil
 import pickle
-import logging
-from muvi_maker import main_logger, mv_scratch_key  # , indir, outdir, projects_dir, storage_dir, project_handler_dir
+from muvi_maker import main_logger, mv_scratch_key
 from muvi_maker.core.sound import Sound
 from muvi_maker.core.picture import Picture
 from muvi_maker.core.video import Video
@@ -119,10 +118,21 @@ class ProjectHandler:
     # ==========================================  Video  ========================================== #
 
     def analyse(self, hop_length=standard_hop_length, framerate=standard_framerate, test_ind=None, codec='mp4'):
-        filename = f"{self.outdir}/{self.name}_params.{codec}"
+        """
+        TODO:
+            make_colorbar()
+            make_spectrogramm()
+            make_low_res_video()
+        """
+
         video = Video(self.get_sound(hop_length, framerate), framerate=framerate, duration=self.length)
-        clip = video.make_param_video(storage=self.storage_dir, filename=filename, test_ind=test_ind)
-        return clip
+
+        # raise NotImplementedError
+
+        # filename = f"{self.outdir}/{self.name}_params.{codec}"
+        # video = Video(self.get_sound(hop_length, framerate), framerate=framerate, duration=self.length)
+        # clip = video.make_param_video(storage=self.storage_dir, filename=filename, test_ind=test_ind)
+        # return clip
     
     def make_video(self, hop_length=standard_hop_length, framerate=standard_framerate, codec='mp4'):
         video = Video(self.get_sound(hop_length, framerate), framerate=framerate, duration=self.length)
