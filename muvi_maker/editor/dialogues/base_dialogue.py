@@ -1,7 +1,6 @@
-from muvi_maker import main_logger, mv_scratch_key, set_scratch_dir
+from muvi_maker import main_logger
 import tkinter as tk
 from tkinter import filedialog as fd
-import os
 
 
 logger = main_logger.getChild(__name__)
@@ -31,8 +30,8 @@ class BaseDialogue(tk.Toplevel):
         self.mainloop()
 
     def _setup_standard_widgets(self):
-        msg_Label = tk.Label(self, textvariable=self.msg)
-        msg_Label.pack(fill='both', expand=True)
+        msg_label = tk.Label(self, textvariable=self.msg)
+        msg_label.pack(fill='both', expand=True)
 
         e = tk.Entry(self, borderwidth=5)
         e.insert(0, self.insert)
