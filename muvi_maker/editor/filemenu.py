@@ -1,5 +1,5 @@
 import tkinter as tk
-from muvi_maker import main_logger
+from muvi_maker import main_logger, get_editor
 from muvi_maker.editor.dialogues import OpenProjectDialogue, NewFileDialogue
 
 logger = main_logger.getChild(__name__)
@@ -25,10 +25,5 @@ class Filemenu(tk.Menu):
         OpenProjectDialogue(self)
 
     def _save_project(self):
-        pass
-
-    # def get_project_handler(self):
-    #     return self.master.get_project_handler()
-    #
-    # def set_project_handler(self, project_handler):
-    #     self.master.set_project_handler(project_handler)
+        editor = get_editor(self)
+        editor.project_handler.save_me()
