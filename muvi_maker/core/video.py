@@ -41,95 +41,173 @@ class Video:
             h, b = np.histogram(max_inds[i:i + 10])
             l.append(b[np.argmax(h)])
         self.color = [self.cmap(li) for li in l]
-
+git add 
     def _ind(self, t):
         return int(math.floor(t*self.framerate))
     
     def _t(self, ind):
         return ind/self.framerate
 
+    def make_frame_per_frame(self, ind):
+
+        surface = gizeh.Surface(int(self.screen_size[0] * 2), int(self.screen_size[1] * 2))
+
+        middle = (self.screen_size[0], self.screen_size[1])
+        max_radius = min(self.screen_size) / 2
+        radius = self.percussion_power / max(self.percussion_power) * max_radius
+        log_radius = np.log(radius)
+        log_radius = log_radius / max(log_radius) * max_radius
+
+        def stars(this_ind, center, this_surface, radius_factor=1):
+
+            star = gizeh.star(
+                radius=radius[this_ind] * 2,
+                nbranches=10, xy=center, fill=self.color[this_ind]
+            )
+            star.draw(this_surface)
+
+            if this_ind > 1:
+                outer_star1 = gizeh.star(
+                    radius=radius[this_ind - 1] * 3 * radius_factor,
+                    nbranches=10,
+                    xy=center,
+                    fill=None,
+                    stroke=self.color[this_ind - 1],
+                    stroke_width=8,
+                )
+                outer_star1.draw(this_surface)
+
+            if this_ind > 2:
+                outer_star2 = gizeh.star(
+                    radius=radius[this_ind - 2] * 4 * radius_factor,
+                    nbranches=10,
+                    xy=center,
+                    fill=None,
+                    stroke=self.color[this_ind - 2],
+                    stroke_width=4
+                )
+                outer_star2.draw(this_surface)
+
+            if this_ind > 3:
+                outer_star3 = gizeh.star(
+                    radius=radius[this_ind - 3] * 5 * radius_factor,
+                    nbranches=10,
+                    xy=center,
+                    fill=None,
+                    stroke=self.color[this_ind - 3],
+                    stroke_width=1
+                )
+                outer_star3.draw(this_surface)
+
+        circle = gizeh.circle(log_radius[ind] / 4, xy=middle, fill=self.color[ind])
+        circle.draw(surface)
+        stars(ind, middle, surface)
+
+        n = self.framerate * 5
+        circle_radius = min(self.screen_size)
+        circle = [(math.cos(2 * math.pi / n * x) * circle_radius + self.screen_size[0],
+                   math.sin(2 * math.pi / n * x) * circle_radius + self.screen_size[1])
+                  for x in range(n + 1)]
+
+        n_stars = 5
+
+        if self.harmonic_power[ind] > max(self.harmonic_power) / 2:
+            circle_ind = ind % (n - 1)
+            for stari in range(n_stars):
+                stars(ind, circle[(circle_ind + math.floor(n * stari / n_stars)) % (n - 1)], surface)
+            # stars(ind, circle[circle_ind], surface)
+            # stars(ind, circle[(circle_ind + math.floor(n * 1/4)) % (n-1)], surface)
+            # stars(ind, circle[(circle_ind + math.floor(n * 2/4)) % (n-1)], surface)
+            # stars(ind, circle[(circle_ind + math.floor(n * 3/4)) % (n-1)], surface)
+
+        return surface.get_npimage()
+
+    def make_frame_per_time(self, t):
+        ind = self._ind(t)
+        return self.make_frame_per_frame(ind)
+
     def make_video(self, filename):
         """ to be implemented in subclasses! """
         
-        logger.info(f'No make video function in subclass. Making default video which is really boring.')
-        
-        middle = (self.screen_size[0], self.screen_size[1])
-        max_radius = min(self.screen_size)/2
-        radius = self.percussion_power / max(self.percussion_power) * max_radius
-        log_radius = np.log(radius)
-        log_radius = log_radius/max(log_radius) * max_radius
+        # logger.info(f'No make video function in subclass. Making default video which is really boring.')
+        #
+        # middle = (self.screen_size[0], self.screen_size[1])
+        # max_radius = min(self.screen_size)/2
+        # radius = self.percussion_power / max(self.percussion_power) * max_radius
+        # log_radius = np.log(radius)
+        # log_radius = log_radius/max(log_radius) * max_radius
+        #
+        # small_stars_radius = self.harmonic_power / max(self.harmonic_power) * max_radius / 8
+        #
+        # def make_frame(t):
+        #
+        #     ind = self._ind(t)
+        #     surface = gizeh.Surface(int(self.screen_size[0]*2), int(self.screen_size[1]*2))
+        #
+        #     def stars(this_ind, center, this_surface, radius_factor=1):
+        #
+        #         star = gizeh.star(
+        #             radius=radius[this_ind]*2,
+        #             nbranches=10, xy=center, fill=self.color[this_ind]
+        #         )
+        #         star.draw(this_surface)
+        #
+        #         if this_ind > 1:
+        #             outer_star1 = gizeh.star(
+        #                 radius=radius[this_ind-1]*3*radius_factor,
+        #                 nbranches=10,
+        #                 xy=center,
+        #                 fill=None,
+        #                 stroke=self.color[this_ind-1],
+        #                 stroke_width=8,
+        #             )
+        #             outer_star1.draw(this_surface)
+        #
+        #         if this_ind > 2:
+        #             outer_star2 = gizeh.star(
+        #                 radius=radius[this_ind-2]*4*radius_factor,
+        #                 nbranches=10,
+        #                 xy=center,
+        #                 fill=None,
+        #                 stroke=self.color[this_ind-2],
+        #                 stroke_width=4
+        #             )
+        #             outer_star2.draw(this_surface)
+        #
+        #         if this_ind > 3:
+        #             outer_star3 = gizeh.star(
+        #                 radius=radius[this_ind-3]*5*radius_factor,
+        #                 nbranches=10,
+        #                 xy=center,
+        #                 fill=None,
+        #                 stroke=self.color[this_ind-3],
+        #                 stroke_width=1
+        #             )
+        #             outer_star3.draw(this_surface)
+        #
+        #     circle = gizeh.circle(log_radius[ind] / 4, xy=middle, fill=self.color[ind])
+        #     circle.draw(surface)
+        #     stars(ind, middle, surface)
+        #
+        #     n = self.framerate * 5
+        #     circle_radius = min(self.screen_size)
+        #     circle = [(math.cos(2*math.pi/n * x) * circle_radius + self.screen_size[0], math.sin(2*math.pi/n * x) * circle_radius + self.screen_size[1])
+        #               for x in range(n+1)]
+        #
+        #     n_stars = 5
+        #
+        #     if self.harmonic_power[ind] > max(self.harmonic_power)/2:
+        #         circle_ind = ind % (n-1)
+        #         for stari in range(n_stars):
+        #             stars(ind, circle[(circle_ind + math.floor(n * stari/n_stars)) % (n-1)], surface)
+        #         #stars(ind, circle[circle_ind], surface)
+        #         #stars(ind, circle[(circle_ind + math.floor(n * 1/4)) % (n-1)], surface)
+        #         #stars(ind, circle[(circle_ind + math.floor(n * 2/4)) % (n-1)], surface)
+        #         #stars(ind, circle[(circle_ind + math.floor(n * 3/4)) % (n-1)], surface)
+        #
+        #     return surface.get_npimage()
 
-        small_stars_radius = self.harmonic_power / max(self.harmonic_power) * max_radius / 8
-        
-        def make_frame(t):
-            
-            ind = self._ind(t)
-            surface = gizeh.Surface(int(self.screen_size[0]*2), int(self.screen_size[1]*2))
-            
-            def stars(this_ind, center, this_surface, radius_factor=1):
-                
-                star = gizeh.star(
-                    radius=radius[this_ind]*2,
-                    nbranches=10, xy=center, fill=self.color[this_ind]
-                )
-                star.draw(this_surface)
-                
-                if this_ind > 1:
-                    outer_star1 = gizeh.star(
-                        radius=radius[this_ind-1]*3*radius_factor,
-                        nbranches=10, 
-                        xy=center, 
-                        fill=None, 
-                        stroke=self.color[this_ind-1],
-                        stroke_width=8,
-                    )
-                    outer_star1.draw(this_surface)
-                
-                if this_ind > 2:
-                    outer_star2 = gizeh.star(
-                        radius=radius[this_ind-2]*4*radius_factor,
-                        nbranches=10, 
-                        xy=center, 
-                        fill=None, 
-                        stroke=self.color[this_ind-2],
-                        stroke_width=4
-                    )
-                    outer_star2.draw(this_surface)
-                
-                if this_ind > 3:
-                    outer_star3 = gizeh.star(
-                        radius=radius[this_ind-3]*5*radius_factor,
-                        nbranches=10, 
-                        xy=center, 
-                        fill=None, 
-                        stroke=self.color[this_ind-3],
-                        stroke_width=1
-                    )
-                    outer_star3.draw(this_surface)
-
-            circle = gizeh.circle(log_radius[ind] / 4, xy=middle, fill=self.color[ind])
-            circle.draw(surface)
-            stars(ind, middle, surface)
-
-            n = self.framerate * 5
-            circle_radius = min(self.screen_size)
-            circle = [(math.cos(2*math.pi/n * x) * circle_radius + self.screen_size[0], math.sin(2*math.pi/n * x) * circle_radius + self.screen_size[1])
-                      for x in range(n+1)]
-            
-            n_stars = 5
-
-            if self.harmonic_power[ind] > max(self.harmonic_power)/2:
-                circle_ind = ind % (n-1)
-                for stari in range(n_stars):
-                    stars(ind, circle[(circle_ind + math.floor(n * stari/n_stars)) % (n-1)], surface)
-                #stars(ind, circle[circle_ind], surface)
-                #stars(ind, circle[(circle_ind + math.floor(n * 1/4)) % (n-1)], surface)
-                #stars(ind, circle[(circle_ind + math.floor(n * 2/4)) % (n-1)], surface)
-                #stars(ind, circle[(circle_ind + math.floor(n * 3/4)) % (n-1)], surface)
-
-            return surface.get_npimage()
-
-        clip = mpy.VideoClip(make_frame, duration=self.duration)
+        clip = mpy.VideoClip(self.make_frame_per_time, duration=self.duration)
         # clip.size = self.screen_size
         logger.debug(f'clip size is {clip.size}')
         logger.debug(f'setting {self.sound.filename} as audio')

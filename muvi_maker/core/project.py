@@ -1,10 +1,12 @@
 import os
 import shutil
 import pickle
+from tqdm import tqdm
 from muvi_maker import main_logger, mv_scratch_key
 from muvi_maker.core.sound import Sound
 from muvi_maker.core.picture import Picture
 from muvi_maker.core.video import Video
+import muvi_maker.core.utils as utils
 
 
 logger = main_logger.getChild(__name__)
@@ -39,6 +41,8 @@ class ProjectHandler:
         self.sound_filename = None
         self.pictures = {}
         self.videos = {}
+
+        self.analyzer_results = None
 
         self.length = None
         # self.add_sound(filename)
@@ -117,7 +121,7 @@ class ProjectHandler:
 
     # ==========================================  Video  ========================================== #
 
-    def analyse(self, hop_length=standard_hop_length, framerate=standard_framerate, test_ind=None, codec='mp4'):
+    def analyse(self, screen_size, hop_length=standard_hop_length, framerate=standard_framerate):
         """
         TODO:
             make_colorbar()
@@ -125,7 +129,17 @@ class ProjectHandler:
             make_low_res_video()
         """
 
-        video = Video(self.get_sound(hop_length, framerate), framerate=framerate, duration=self.length)
+        sound = self.get_sound(hop_length, framerate)
+        video = Video(sound, framerate=framerate, duration=self.length, screen_size=screen_size)
+        spectrogram = utils.specptrogram_raw_to_image_arrays(sound.get_frange(), video.harmonic)
+        low_res_video_frames = list()
+        for i in tqdm(range(round(framerate*self.length)), desc='making low res frames'):
+            low_res_video_frames.append(video.make_frame_per_frame(i))
+
+        self.analyzer_results = video.color, spectrogram, low_res_video_frames, framerate
+        self.save_me()
+
+        return video.color, spectrogram, low_res_video_frames, framerate
 
         # raise NotImplementedError
 
