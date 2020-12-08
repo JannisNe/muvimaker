@@ -15,6 +15,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     main_logger.setLevel(args.log_level)
 
-    root = tk.Tk()
+    root = tk.Tk(className='MuviMaker')
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    root.geometry(f'{round(screen_width/2)}x{round(screen_height/2)}')
     app = Editor(root)
     root.mainloop()
