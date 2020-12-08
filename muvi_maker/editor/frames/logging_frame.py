@@ -8,20 +8,6 @@ from muvi_maker import main_logger, main_queue, logger_format
 logger = main_logger.getChild(__name__)
 
 
-# class QueueHandler(logging.Handler):
-#     """Class to send logging records to a queue
-#
-#     It can be used from different threads
-#     """
-#
-#     def __init__(self, log_queue):
-#         super().__init__()
-#         self.log_queue = log_queue
-#
-#     def emit(self, record):
-#         self.log_queue.put(record)
-
-
 class ConsoleUi:
     """Poll messages from a logging queue and display them in a scrolled text widget"""
 
@@ -30,9 +16,9 @@ class ConsoleUi:
         self.frame = frame
 
         # Create a ScrolledText wdiget
-        self.scrolled_text = st.ScrolledText(frame, state='disabled', height=6)
-        self.scrolled_text.grid(row=0, column=0)#, sticky=(N, S, W, E))
-        self.scrolled_text.configure(font='TkFixedFont')
+        self.scrolled_text = st.ScrolledText(frame, state='disabled', height=3)
+        self.scrolled_text.grid(row=0, column=0, sticky='nsew')
+        self.scrolled_text.configure(font=('TkFixedFont', 10))
         self.scrolled_text.tag_config('INFO', foreground='black')
         self.scrolled_text.tag_config('DEBUG', foreground='gray')
         self.scrolled_text.tag_config('WARNING', foreground='orange')
@@ -41,17 +27,9 @@ class ConsoleUi:
 
         # Create a logging handler using a queue
         self.log_queue = log_queue
-        # self.queue_handler = QueueHandler(self.log_queue)
-        # self.queue_handler.setFormatter(logger_format)
-        # main_logger.addHandler(self.queue_handler)
 
         # Start polling messages from the queue
         self.frame.after(100, self.poll_log_queue)
-        # process = Process(target=multiprocess_wrapping, args=(self, ))
-        # process.start()
-        # process.join()
-        # start_new_thread(self.frame.after, (100, self.poll_log_queue,))
-        # self.frame.after(100, self.poll_log_queue)
 
     def display(self, record):
         # msg = self.queue_handler.format(record)
@@ -81,17 +59,3 @@ class LoggingFrame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         ConsoleUi(self)
-
-
-# class LoggingWindow(tk.Tk):
-#
-#     def __init__(self):
-#         tk.Tk.__init__(self)
-#         logging_frame = LoggingFrame(self)
-#         logging_frame.grid()
-#         self.mainloop()
-#
-#     @staticmethod
-#     def multiprocess_wrapping(queue, level):
-#         setup_logger(queue, level, logger)
-#         LoggingWindow()
