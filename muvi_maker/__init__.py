@@ -1,9 +1,6 @@
 import os
 import logging
 import queue
-import multiprocessing
-import sys
-import shutil
 
 # ======================== #
 # ==  customize logger  == #
@@ -37,21 +34,6 @@ queue_handler = QueueHandler(main_queue)
 queue_handler.setFormatter(logger_format)
 main_logger.addHandler(queue_handler)
 
-
-# def setup_logger(queue, level='INFO', logger=main_logger):
-#     stream_handler = logging.StreamHandler()
-#     stream_handler.setFormatter(logger_format)
-#     logger.addHandler(stream_handler)
-#
-#     queue_handler = QueueHandler(queue)
-#     queue_handler.setFormatter(logger_format)
-#     logger.addHandler(queue_handler)
-#
-#     logger.setLevel(level)
-#
-#
-# setup_logger(main_queue)
-
 # ====================================== #
 # ==  setting up directory structure  == #
 # ====================================== #
@@ -69,17 +51,3 @@ def get_editor(self):
     while not (hasattr(master, 'name') and (master.name == 'editor')):
         master = master.master
     return master
-
-# indir = mv_scratch + '/input'
-# outdir = mv_scratch + '/output'
-# storage_dir = mv_scratch + '/storage'
-#
-# projects_dir = f'{indir}/projects'
-#
-# project_handler_dir = f'{storage_dir}/project_handler'
-#
-# for directory in [indir, outdir, storage_dir,
-#                   projects_dir, project_handler_dir]:
-#     if not os.path.exists(directory):
-#         os.mkdir(directory)
-
