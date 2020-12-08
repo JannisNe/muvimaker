@@ -7,11 +7,10 @@ logger = main_logger.getChild(__name__)
 
 class ParametersFrame(tk.LabelFrame):
 
-    def __init__(self, parent):
-        tk.LabelFrame.__init__(self, parent.master, text='Parameters', labelanchor='n')
+    def __init__(self, parent, **kw):
+        tk.LabelFrame.__init__(self, parent.master, text='Parameters', labelanchor='n', **kw)
         self.parent = parent
         self._entries = dict()
-        # self.__state = 'disabled'
         self._setup_widgets()
         self['state'] = 'disabled'
 
