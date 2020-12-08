@@ -41,7 +41,7 @@ class Video:
             h, b = np.histogram(max_inds[i:i + 10])
             l.append(b[np.argmax(h)])
         self.color = [self.cmap(li) for li in l]
-git add 
+git add
     def _ind(self, t):
         return int(math.floor(t*self.framerate))
     
