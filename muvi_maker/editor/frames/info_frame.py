@@ -8,7 +8,7 @@ logger = main_logger.getChild(__name__)
 class InfoFrame(tk.LabelFrame):
 
     def __init__(self, parent):
-        tk.LabelFrame.__init__(self, parent.master, text='Info', labelanchor='n')
+        tk.LabelFrame.__init__(self, parent.master, text='File Info', labelanchor='n')
         self.parent = parent
         self._setup_widgets()
 
