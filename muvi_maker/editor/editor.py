@@ -149,26 +149,22 @@ class Editor(tk.Frame):
         self._progress_bar_thread.start()
 
     def _running_progress_bar(self):
-        # s = ttk.Style()
-        # s.theme_use('clam')
-        # s.configure("red.Horizontal.TProgressbar", troughcolor='blue', background='white')
         logger.debug('running progress bar')
         progress_bar = self.widgets['progress_bar']
-        # progress_bar.configure(style=s)
         progress_bar['value'] = 0
         sgn = 1
         while True:
             try:
                 cont = self.progress_bar_queue.get(block=False)
                 if not cont:
+                    logger.debug('stopping progress bar')
                     break
-            except queue.Empty as e:
+            except queue.Empty:
                 pass
 
             progress_bar['value'] += 1 * sgn
             if progress_bar['value'] >= 100:
                 sgn *= -1
-            # self.parent.update_idletasks()
             time.sleep(1 / 10)
 
     def _stop_progress_bar(self):
@@ -182,12 +178,14 @@ class Editor(tk.Frame):
 
     def make_video(self):
         self.active.set('disabled')
-        threading.Thread(target=self._start_progress_bar).start()
+        # threading.Thread(target=self._start_progress_bar).start()
         if not self.project_handler.sound_filename:
             logger.error(f'No sound file!')
 
         else:
+            self._start_progress_bar()
             self.videofile = self.project_handler.make_video()
+            self._stop_progress_bar()
 
     def analyse(self):
         self._start_progress_bar()
@@ -197,7 +195,7 @@ class Editor(tk.Frame):
 
     def _analyse(self):
         logger.debug('analysing')
-        threading.Thread(target=self._start_progress_bar).start()
+        # threading.Thread(target=self._start_progress_bar).start()
         if not self.project_handler.sound_filename:
             logger.error(f'No sound file!')
 

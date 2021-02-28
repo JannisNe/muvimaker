@@ -32,7 +32,6 @@ class ConsoleUi:
         self.frame.after(100, self.poll_log_queue)
 
     def display(self, record):
-        # msg = self.queue_handler.format(record)
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(logger_format)
         msg = stream_handler.format(record)

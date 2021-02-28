@@ -18,9 +18,3 @@ class Menubar(tk.Menu):
     def _setup_cascades(self):
         self.add_cascade(label='File', menu=Filemenu(self))
         self.add_cascade(label='Audio', menu=Soundmenu(self))
-
-    # def get_project_handler(self):
-    #     return self.master.get_project_handler()
-
-    # def set_project_handler(self, project_handler):
-    #     self.master.set_project_handler(project_handler)

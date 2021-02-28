@@ -58,7 +58,7 @@ class AnalyzerFrame(tk.LabelFrame):
     @c_s_lrvf.setter
     def c_s_lrvf(self, tup):
         logger.debug('analyzer frame got results')
-        self._color, self._spectrograph_raw, self._low_res_video_images, self._fps = tup
+        self._color, self._spectrograph, self._low_res_video_images, self._fps = tup
         self.scale.configure(to=len(self._low_res_video_images)-1)
         self.frame_ind = 0
 
@@ -89,7 +89,7 @@ class AnalyzerFrame(tk.LabelFrame):
 
         # setting up the label that displays the spectrogram
         spec_label = tk.Label(self, image=self._spec)
-        spec_label.grid(row=0, column=1, sticky='nsew')
+        spec_label.grid(row=0, column=0, sticky='nsew')
         self._entries['spec_label'] = spec_label
         self.spec_label = spec_label
         
@@ -109,19 +109,20 @@ class AnalyzerFrame(tk.LabelFrame):
         return img
 
     def _get_image(self, frame_ind):
-        return self._get_pil_image_from_array(frame_ind, self._low_res_video_images)
-        # img_array = self._low_res_video_images[frame_ind]
-        # pil_img = Image.fromarray(img_array)
-        # pil_img.thumbnail(self._pic_size)
-        # img = ImageTk.PhotoImage(image=pil_img)
-        # return img
+        if not isinstance(self._low_res_video_images, type(None)):
+            return self._get_pil_image_from_array(frame_ind, self._low_res_video_images)
+        else:
+            logger.warning('No video images analysed!')
 
     def _update_preview_label(self, frame_ind):
         self._img = self._get_image(frame_ind)
         self.preview_label.configure(image=self._img)
 
     def _get_spectrogram(self, frame_ind):
-        return self._get_pil_image_from_array(frame_ind, self._spectrograph)
+        if not isinstance(self._spectrograph, type(None)):
+            return self._get_pil_image_from_array(frame_ind, self._spectrograph)
+        else:
+            logger.warning(f'Spectrogram is None!')
 
     def _update_spectrogram_label(self, frame_ind):
         self._spec = self._get_spectrogram(frame_ind)
@@ -137,7 +138,7 @@ class AnalyzerFrame(tk.LabelFrame):
     def _play_thread(self):
         self._stop = False
         logger.debug('play')
-        while not self._stop:
+        while True:
 
             logger.debug(f'frame ind is {self._frame_ind}')
             self.scale.set(self._frame_ind + 1)
