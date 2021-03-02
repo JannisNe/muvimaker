@@ -40,6 +40,7 @@ class Editor(tk.Frame):
         self._ongoing_progress = None
         self._progress_bar_thread = None
         self._analysing_thread = None
+        self._make_video_thread = None
 
         self.active = tk.StringVar()
         self.active.set('disabled')
@@ -184,18 +185,21 @@ class Editor(tk.Frame):
 
         else:
             self._start_progress_bar()
-            self.videofile = self.project_handler.make_video()
-            self._stop_progress_bar()
+            self._make_video_thread = threading.Thread(target=self._make_video)
+            self._make_video_thread.start()
+
+    def _make_video(self):
+        logger.debug('making video')
+        self.videofile = self.project_handler.make_video()
+        self._stop_progress_bar()
 
     def analyse(self):
         self._start_progress_bar()
         self._analysing_thread = threading.Thread(target=self._analyse)
         self._analysing_thread.start()
-        # self._stop_progress_bar()
 
     def _analyse(self):
         logger.debug('analysing')
-        # threading.Thread(target=self._start_progress_bar).start()
         if not self.project_handler.sound_filename:
             logger.error(f'No sound file!')
 
