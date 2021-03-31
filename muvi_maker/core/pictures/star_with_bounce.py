@@ -23,8 +23,8 @@ class StarWithBounce(Star):
         self.stroke_width_decline_order = float(param_info.get('stroke_width_decline_order', 2))
 
     def stroke_width(self, j):
-        b = (self.min_stroke_width - self.max_stroke_width) / \
-            (1 - (self.multiplicity + 1) ** self.stroke_width_decline_order)
+        b = (self.min_stroke_width - self.max_stroke_width * self.multiplicity ** self.stroke_width_decline_order ) / \
+            (1 - self.multiplicity ** self.stroke_width_decline_order)
         a = self.max_stroke_width - b
         return a * j ** self.stroke_width_decline_order + b
 
