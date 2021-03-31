@@ -34,7 +34,9 @@ class Editor(tk.Frame):
         self.progress_bar_queue = queue.Queue()
         self.analyzer_frame_queue = queue.Queue()
 
-        self._soundfile = tk.StringVar()
+        # self._soundfile = tk.StringVar()
+        self._pictures = dict()
+        self._soundfiles = dict()
         self._videofile = tk.StringVar()
         self._project_handler = None
         self._ongoing_progress = None
@@ -55,15 +57,15 @@ class Editor(tk.Frame):
 
     # ------------------    properties   --------------------- #
 
-    @property
-    def soundfile(self):
-        return self._soundfile
+    # @property
+    # def soundfile(self):
+    #     return self._soundfile
 
-    @soundfile.setter
-    def soundfile(self, value):
-        self._soundfile.set(value)
-        self.project_handler.add_sound(value)
-        self.active.set('normal')
+    # @soundfile.setter
+    # def soundfile(self, value):
+    #     # self._soundfile.set(value)
+    #     self.project_handler.add_sound(value)
+    #     self.active.set('normal')
 
     @property
     def videofile(self):
@@ -81,14 +83,18 @@ class Editor(tk.Frame):
     def project_handler(self, value):
         logger.debug('got ProjectHandler')
         self._project_handler = value
-        self._soundfile.set(str(value.sound_filename))
+        # self._soundfile.set(str(value.sound_filename))
 
-        if value.sound_filename:
-            self.active.set('normal')
-            logger.debug("activated")
-            if not isinstance(value.analyzer_results, type(None)):
-                logger.debug(f'passing saved analyzer results to analyzer frame')
-                self.widgets['analyzer_frame'].c_s_lrvf = value.analyzer_results
+        self.widgets['info_frame'].sound_files_frame._info_dict = value.sound_files
+        self.widgets['info_frame'].sound_files_frame.update_listbox()
+        self.widgets['info_frame'].pictures_frame._info_dict = value.pictures
+        self.widgets['info_frame'].pictures_frame.update_listbox()
+
+        self.active.set('normal')
+        logger.debug("activated")
+        if not isinstance(value.analyzer_results, type(None)):
+            logger.debug(f'passing saved analyzer results to analyzer frame')
+            self.widgets['analyzer_frame'].c_s_lrvf = value.analyzer_results
 
     # --------------------   Widgets   ------------------------ #
 
@@ -180,8 +186,8 @@ class Editor(tk.Frame):
     def make_video(self):
         self.active.set('disabled')
         # threading.Thread(target=self._start_progress_bar).start()
-        if not self.project_handler.sound_filename:
-            logger.error(f'No sound file!')
+        if not self.project_handler.main_sound_file:
+            logger.error(f'No main sound file!')
 
         else:
             self._start_progress_bar()
@@ -200,21 +206,17 @@ class Editor(tk.Frame):
 
     def _analyse(self):
         logger.debug('analysing')
-        if not self.project_handler.sound_filename:
-            logger.error(f'No sound file!')
-
-        else:
-            screen_size = np.array(self.widgets['parameters_frame'].size, dtype=float)
-            f = self.widgets['analyzer_frame'].pic_size[0] / screen_size[0]
-            screen_size *= f
-            fps = self.widgets['parameters_frame'].fps
-            color, spectrogram, low_res_video_frames, fps = self.project_handler.analyse(
-                screen_size,
-                framerate=fps)
-            logger.debug('passing results to analyzer frame')
-            self.analyzer_frame_queue.put({'c_s_lrvf': (color, spectrogram, low_res_video_frames, fps)})
-            self.widgets['analyzer_frame'].collect()
-            self._stop_progress_bar()
+        screen_size = np.array(self.widgets['parameters_frame'].size, dtype=float)
+        f = self.widgets['analyzer_frame'].pic_size[0] / screen_size[0]
+        screen_size *= f
+        fps = self.widgets['parameters_frame'].fps
+        low_res_video_frames, fps = self.project_handler.analyse(
+            screen_size,
+            framerate=fps)
+        logger.debug('passing results to analyzer frame')
+        self.analyzer_frame_queue.put({'c_s_lrvf': (low_res_video_frames, fps)})
+        self.widgets['analyzer_frame'].collect()
+        self._stop_progress_bar()
 
     def check_scratch(self):
         scr = os.environ.get(mv_scratch_key, "None")

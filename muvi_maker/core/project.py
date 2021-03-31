@@ -2,16 +2,18 @@ import os
 import shutil
 import pickle
 from tqdm import tqdm
+import numpy as np
+
 from muvi_maker import main_logger, mv_scratch_key
-from muvi_maker.core.sound import Sound
-from muvi_maker.core.picture import Picture
+from muvi_maker.core.sound import Sound, SoundError
+from muvi_maker.core.pictures import BasePicture
 from muvi_maker.core.video import Video
-import muvi_maker.core.utils as utils
 
 
 logger = main_logger.getChild(__name__)
 standard_hop_length = 512
 standard_framerate = 24
+standard_screen_size = (1280, 720)
 
 
 class ProjectHandler:
@@ -38,14 +40,15 @@ class ProjectHandler:
                 logger.debug(f'making directory {directory}')
                 os.mkdir(directory)
 
-        self.sound_filename = None
-        self.pictures = {}
-        self.videos = {}
+        self.pictures = dict()
+        self.sound_files = dict()
+        self.videos = dict()
+
+        self._main_soundfile = None
 
         self.analyzer_results = None
 
         self.length = None
-        # self.add_sound(filename)
 
         self.save_me()
 
@@ -84,26 +87,39 @@ class ProjectHandler:
 
     # ===========================================  Sound  =========================================== #
 
-    def add_sound(self, filename):
+    @property
+    def main_sound_file(self):
+        return self.sound_files.get('main')
 
+    @main_sound_file.setter
+    def main_sound_file(self, value):
+        self.add_sound('main', value)
+
+    def add_sound(self, name, filename):
+
+        length = Sound(filename, hop_length=standard_hop_length).get_length()
+        if self.length and not (length == self.length):
+            raise SoundError(f'Length of {filename} is {length}s but should be {self.length}s!')
+
+        self.length = length
         new_filename = f'{self.sound_dir}/{filename.split(os.path.sep)[-1]}'
 
-        if filename != self.sound_filename:
+        if not filename.startswith(os.path.abspath(self.indir) + os.path.sep):
+            logger.debug(f'copying {filename} to {new_filename}')
+            shutil.copy2(filename, new_filename)
 
-            if not self.sound_filename:
-                self.sound_filename = new_filename
-            else:
-                raise FileExistsError('Already have a sound file!')
-
-            if not filename.startswith(os.path.abspath(self.indir) + os.path.sep):
-                logger.debug(f'copying {filename} to {new_filename}')
-                shutil.copy2(filename, new_filename)
-
-        self.length = Sound(self.sound_filename, hop_length=standard_hop_length).get_length()
+        self.sound_files[name] = new_filename
         self.save_me()
 
-    def get_sound(self, hop_length=standard_hop_length, framerate=standard_framerate):
-        return Sound(self.sound_filename, hop_length=hop_length, sample_rate=framerate * hop_length)
+    def get_sound(self, name, hop_length, framerate):
+        return Sound(self.sound_files[name], hop_length=hop_length, sample_rate=framerate * hop_length)
+
+    def sound_dictionary(self, framerate, hoplength):
+        d = {
+            name: self.get_sound(name, hoplength, framerate)
+            for name in self.sound_files.keys()
+        }
+        return d
 
     # ==========================================  Pictures  ========================================== #
 
@@ -116,40 +132,49 @@ class ProjectHandler:
 
         self.pictures[new_filename.split(os.sep)[-1].split('.')[0]] = new_filename
 
-    def get_picture(self, name):
-        return Picture(self.pictures[name])
+    def get_picture(self, name, screen_size, framerate, hoplength):
+        picture_class, picture_params_list, ind = self.pictures[name]
+
+        param_info = dict()
+        for t in picture_params_list:
+            attr, value = t.split(': ')
+            param_info[attr] = value
+
+        sound_dict = self.sound_dictionary(framerate, hoplength)
+        return BasePicture.create(picture_class, sound_dict, param_info, screen_size), ind
+
+    def get_pictures_list(self, screen_size, framerate, hoplength):
+        l = np.empty(len(self.pictures.keys()), dtype=object)
+        for n in self.pictures.keys():
+            picture, ind = self.get_picture(n, screen_size, framerate, hoplength)
+            logger.debug(f'adding picture of class {type(picture)} at indice {ind}')
+            l[ind] = picture
+        return l
 
     # ==========================================  Video  ========================================== #
 
-    def analyse(self, screen_size, hop_length=standard_hop_length, framerate=standard_framerate):
-        """
-        TODO:
-            make_colorbar()
-            make_spectrogramm()
-            make_low_res_video()
-        """
+    def get_video(self, screen_size, hop_length, framerate):
+        pictures = self.get_pictures_list(screen_size, framerate, hop_length)
+        duration = self.get_sound('main', hop_length, framerate).get_length()
+        self.length = duration
+        video = Video(pictures, self.main_sound_file, framerate, duration, screen_size)
+        return video
 
-        sound = self.get_sound(hop_length, framerate)
-        video = Video(sound, framerate=framerate, duration=self.length, screen_size=screen_size)
-        spectrogram = utils.specptrogram_raw_to_image_arrays(sound.get_frange(), video.harmonic)
+    def analyse(self, screen_size=standard_screen_size, hop_length=standard_hop_length, framerate=standard_framerate):
+        video = self.get_video(screen_size, hop_length, framerate)
         low_res_video_frames = list()
-        for i in tqdm(range(round(framerate*self.length)), desc='making low res frames'):
+        for i in tqdm(range(round(framerate * self.length)), desc='making low res frames'):
             low_res_video_frames.append(video.make_frame_per_frame(i))
 
-        self.analyzer_results = video.color, spectrogram, low_res_video_frames, framerate
+        self.analyzer_results = low_res_video_frames, framerate
         self.save_me()
 
-        return video.color, spectrogram, low_res_video_frames, framerate
+        return low_res_video_frames, framerate
 
-        # raise NotImplementedError
+    def make_video(self, hop_length=standard_hop_length, framerate=standard_framerate, codec='mp4',
+                   screen_size=standard_screen_size):
 
-        # filename = f"{self.outdir}/{self.name}_params.{codec}"
-        # video = Video(self.get_sound(hop_length, framerate), framerate=framerate, duration=self.length)
-        # clip = video.make_param_video(storage=self.storage_dir, filename=filename, test_ind=test_ind)
-        # return clip
-    
-    def make_video(self, hop_length=standard_hop_length, framerate=standard_framerate, codec='mp4'):
-        video = Video(self.get_sound(hop_length, framerate), framerate=framerate, duration=self.length)
+        video = self.get_video(screen_size, hop_length, framerate)
         filename = f"{self.outdir}/{self.name}"
 
         if hop_length != standard_hop_length:

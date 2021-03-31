@@ -9,6 +9,10 @@ logger = main_logger.getChild(__name__)
 standard_fmin = 32.7
 
 
+class SoundError(Exception):
+    pass
+
+
 class Sound:
 
     def __init__(self, filename, hop_length, sample_rate=None, fmin=standard_fmin):

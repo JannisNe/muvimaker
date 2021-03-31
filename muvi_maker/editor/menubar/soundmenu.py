@@ -1,6 +1,5 @@
 import tkinter as tk
 from muvi_maker import main_logger, mv_scratch_key
-from muvi_maker.editor.dialogues import AddSoundDialogue
 
 logger = main_logger.getChild(__name__)
 

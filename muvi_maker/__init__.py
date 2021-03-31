@@ -51,3 +51,13 @@ def get_editor(self):
     while not (hasattr(master, 'name') and (master.name == 'editor')):
         master = master.master
     return master
+
+
+# ====================================== #
+# ==          initialise              == #
+# ====================================== #
+
+from muvi_maker.core.project import ProjectHandler
+from muvi_maker.core.video import Video
+from muvi_maker.core.sound import Sound
+from muvi_maker.core.pictures import *

@@ -1,13 +1,13 @@
 from muvi_maker import main_logger, mv_scratch_key, set_scratch_dir
-from muvi_maker.editor.dialogues.base_dialogue import BaseDialogue
-import tkinter as tk
+from muvi_maker.editor.dialogues.base_dialogue import OpenFileDialogue
+from tkinter import filedialog as fd
 import os
 
 
 logger = main_logger.getChild(__name__)
 
 
-class ScratchDirDialogue(BaseDialogue):
+class ScratchDirDialogue(OpenFileDialogue):
     """Only to be called when the scratch directory doesn't exist or wasn't given!"""
 
     def __init__(self, parent):
@@ -23,12 +23,12 @@ class ScratchDirDialogue(BaseDialogue):
         else:
             logger.warning(f'Called ScratchDirDialogue but {mv_scratch} is a directory!')
 
-        BaseDialogue.__init__(self,
-                              parent,
-                              title='select working directory',
-                              def_msg=msg,
-                              button_text='OK',
-                              insert="Enter working directory")
+        OpenFileDialogue.__init__(self,
+                                  parent,
+                                  title='select working directory',
+                                  def_msg=msg,
+                                  button_text='OK',
+                                  insert="Enter working directory")
 
     def button_action(self):
         scr = self.entry.get()
@@ -36,6 +36,11 @@ class ScratchDirDialogue(BaseDialogue):
             self.set_scratch_and_exit()
         else:
             self.msg.set(f'\"{scr}\" is not a directory!')
+            
+    def browse(self, event):
+        filename = fd.askdirectory()
+        self.entry.delete(0, 'end')
+        self.entry.insert(0, filename)
 
     def set_scratch_and_exit(self):
         """Sets the scratch directory to input"""

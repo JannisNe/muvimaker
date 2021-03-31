@@ -18,12 +18,12 @@ class AnalyzerFrame(tk.LabelFrame):
         self.parent = parent
 
         self._low_res_video_images = [np.asarray(Image.open(baby_file))]
-        self._spectrograph = None
-        self._color = None
+        # self._spectrograph = None
+        # self._color = None
         self._fps = None
         self._pic_size = (300, 300)
         self._img = None
-        self._spec = None
+        # self._spec = None
         self._entries = dict()
         self._frame_ind = None
         self._stop = False
@@ -53,12 +53,12 @@ class AnalyzerFrame(tk.LabelFrame):
 
     @property
     def c_s_lrvf(self):
-        return self._color, self._spectrograph, self._low_res_video_images, self._fps
+        return self._low_res_video_images, self._fps
 
     @c_s_lrvf.setter
     def c_s_lrvf(self, tup):
         logger.debug('analyzer frame got results')
-        self._color, self._spectrograph, self._low_res_video_images, self._fps = tup
+        self._low_res_video_images, self._fps = tup
         self.scale.configure(to=len(self._low_res_video_images)-1)
         self.frame_ind = 0
 
@@ -70,7 +70,7 @@ class AnalyzerFrame(tk.LabelFrame):
     def frame_ind(self, value):
         self._frame_ind = value
         self._update_preview_label(value)
-        self._update_spectrogram_label(value)
+        # self._update_spectrogram_label(value)
 
     def _setup_widgets(self):
 
@@ -88,10 +88,10 @@ class AnalyzerFrame(tk.LabelFrame):
         self.preview_label = preview_label
 
         # setting up the label that displays the spectrogram
-        spec_label = tk.Label(self, image=self._spec)
-        spec_label.grid(row=0, column=0, sticky='nsew')
-        self._entries['spec_label'] = spec_label
-        self.spec_label = spec_label
+        # spec_label = tk.Label(self, image=self._spec)
+        # spec_label.grid(row=0, column=0, sticky='nsew')
+        # self._entries['spec_label'] = spec_label
+        # self.spec_label = spec_label
         
         # setting up play button
         play_button = tk.Button(self, text='PLAY', fg='green', command=self.play)
@@ -118,15 +118,15 @@ class AnalyzerFrame(tk.LabelFrame):
         self._img = self._get_image(frame_ind)
         self.preview_label.configure(image=self._img)
 
-    def _get_spectrogram(self, frame_ind):
-        if not isinstance(self._spectrograph, type(None)):
-            return self._get_pil_image_from_array(frame_ind, self._spectrograph)
-        else:
-            logger.warning(f'Spectrogram is None!')
-
-    def _update_spectrogram_label(self, frame_ind):
-        self._spec = self._get_spectrogram(frame_ind)
-        self.spec_label.configure(image=self._spec)
+    # def _get_spectrogram(self, frame_ind):
+    #     if not isinstance(self._spectrograph, type(None)):
+    #         return self._get_pil_image_from_array(frame_ind, self._spectrograph)
+    #     else:
+    #         logger.warning(f'Spectrogram is None!')
+    #
+    # def _update_spectrogram_label(self, frame_ind):
+    #     self._spec = self._get_spectrogram(frame_ind)
+    #     self.spec_label.configure(image=self._spec)
 
     def _change_frame(self, frame_ind_str):
         self.frame_ind = int(frame_ind_str)
