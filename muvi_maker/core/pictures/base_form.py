@@ -18,7 +18,9 @@ class BaseForm(BasePicture, abc.ABC):
         self.surface = None
 
         # --------------------- Position ----------------------- #
-        self.center = param_info.get('center', [screen_size[0] / 2, screen_size[1] / 2])
+        rel_center = param_info.get('center', '1, 1')
+        rel_center = np.array([float(i) for i in rel_center.split(', ')])
+        self.center = np.array(screen_size) * rel_center
 
         # ---------------------- Radius ------------------------ #
         radius_sound_name = param_info['radius']
