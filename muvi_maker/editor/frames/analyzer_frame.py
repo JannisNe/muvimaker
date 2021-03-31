@@ -21,7 +21,7 @@ class AnalyzerFrame(tk.LabelFrame):
         # self._spectrograph = None
         # self._color = None
         self._fps = None
-        self._pic_size = (300, 300)
+        self._pic_size = (1000, 1000)
         self._img = None
         # self._spec = None
         self._entries = dict()
@@ -83,7 +83,7 @@ class AnalyzerFrame(tk.LabelFrame):
         # setting up the label that displays the frame from the low res preview
         logger.debug(f'Ind is {self.scale.get()}')
         preview_label = tk.Label(self, image=self._img)
-        preview_label.grid(row=0, column=1, sticky='nsew')
+        preview_label.grid(row=0, column=0, columnspan=2, sticky='nsew')
         self._entries['preview_label'] = preview_label
         self.preview_label = preview_label
 

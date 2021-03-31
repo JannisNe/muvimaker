@@ -196,7 +196,9 @@ class Editor(tk.Frame):
 
     def _make_video(self):
         logger.debug('making video')
-        self.videofile = self.project_handler.make_video()
+        screen_size = np.array(self.widgets['parameters_frame'].size, dtype=float)
+        fps = self.widgets['parameters_frame'].fps
+        self.videofile = self.project_handler.make_video(framerate=fps, screen_size=screen_size)
         self._stop_progress_bar()
 
     def analyse(self):
@@ -207,7 +209,7 @@ class Editor(tk.Frame):
     def _analyse(self):
         logger.debug('analysing')
         screen_size = np.array(self.widgets['parameters_frame'].size, dtype=float)
-        f = self.widgets['analyzer_frame'].pic_size[0] / screen_size[0]
+        f = 100 / screen_size[0]
         screen_size *= f
         fps = self.widgets['parameters_frame'].fps
         low_res_video_frames, fps = self.project_handler.analyse(
