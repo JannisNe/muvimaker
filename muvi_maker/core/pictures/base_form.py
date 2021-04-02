@@ -3,9 +3,10 @@ import abc
 import gizeh
 import numpy as np
 import matplotlib.cm as cm
+import collections
 
 from muvi_maker import main_logger
-from .base_picture import BasePicture
+from .base_picture import BasePicture, PictureError
 
 logger = main_logger.getChild(__name__)
 
@@ -16,10 +17,23 @@ class BaseForm(BasePicture, abc.ABC):
         super(BaseForm, self).__init__(sound_dict, param_info, screen_size)
 
         self.surface = None
+        self.kwargs=None
 
         # --------------------- Position ----------------------- #
         rel_center = param_info.get('center', '1, 1')
-        rel_center = np.array([float(i) for i in rel_center.split(', ')])
+
+        # If center is given as string, determines the center for all frames
+        if isinstance(rel_center, str):
+            rel_center = np.array([float(i) for i in rel_center.split(', ')])
+
+        # Center is given as a list-like object for each individual frame
+        elif isinstance(rel_center, collections.Sequence):
+            rel_center = np.array(rel_center)
+
+        else:
+            raise PictureError(f'Type of center is {type(rel_center)} but should be '
+                               f'string or sequence!')
+
         self.center = np.array(screen_size) * rel_center
 
         # ---------------------- Radius ------------------------ #
@@ -63,6 +77,11 @@ class BaseForm(BasePicture, abc.ABC):
 
         self.color = color
 
+    @abc.abstractmethod
+    @property
+    def form(self):
+        pass
+
     def create_surface(self):
         self.surface = gizeh.Surface(int(self.screen_size[0] * 2), int(self.screen_size[1] * 2))
 
@@ -71,6 +90,11 @@ class BaseForm(BasePicture, abc.ABC):
         self.draw(ind)
         return self.surface.get_npimage(transparent=True)
 
-    @abc.abstractmethod
     def draw(self, ind):
-        pass
+        form = getattr(gizeh, self.form)(
+            radius=self.radius[ind],
+            xy=self.center,
+            fill=self.color[ind],
+            **self.kwargs
+        )
+        form.draw(self.surface)

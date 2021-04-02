@@ -35,3 +35,7 @@ class BasePicture(abc.ABC):
     def create(cls, subclass, sound_dictionary, param_info, screen_size):
         picture_class = cls.subclasses[subclass]
         return picture_class(sound_dictionary, param_info, screen_size)
+
+
+class PictureError(Exception):
+    pass
