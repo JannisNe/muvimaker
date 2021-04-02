@@ -67,7 +67,7 @@ class PicturesFrame(tk.LabelFrame):
         if name in l:
             indice = np.where(np.array(l) == name)[0]
         else:
-            indice = len(l)
+            indice = np.atleast_1d(ind)[0]
             self.pictures_listbox.insert(ind, name)
 
         self._info_dict[name] = [picture_file, attributes_list, indice]
