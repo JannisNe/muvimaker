@@ -41,7 +41,6 @@ class Video:
             frame = Image.fromarray(p.make_frame_per_frame(ind)).convert('RGBA')
             bg.paste(frame, (0, 0), frame)
 
-
         return np.array(bg.convert('RGB'))
         # return bg
 

@@ -13,7 +13,7 @@ from muvi_maker import main_logger, mv_scratch_key, main_queue
 from muvi_maker.editor.dialogues import ScratchDirDialogue
 from muvi_maker.editor.menubar import Menubar
 from muvi_maker.editor.frames import InfoFrame, LoggingFrame, ParametersFrame, AnalyzerFrame
-from muvi_maker.core.project import ProjectHandler
+from muvi_maker.core.pictures import PictureError
 
 
 logger = main_logger.getChild(__name__)
@@ -198,7 +198,12 @@ class Editor(tk.Frame):
         logger.debug('making video')
         screen_size = np.array(self.widgets['parameters_frame'].size, dtype=float)
         fps = self.widgets['parameters_frame'].fps
-        self.videofile = self.project_handler.make_video(framerate=fps, screen_size=screen_size)
+
+        try:
+            self.videofile = self.project_handler.make_video(framerate=fps, screen_size=screen_size)
+        except PictureError as e:
+            logger.error(e)
+
         self._stop_progress_bar()
 
     def analyse(self):
@@ -212,12 +217,18 @@ class Editor(tk.Frame):
         f = 100 / screen_size[0]
         screen_size *= f
         fps = self.widgets['parameters_frame'].fps
-        low_res_video_frames, fps = self.project_handler.analyse(
-            screen_size,
-            framerate=fps)
-        logger.debug('passing results to analyzer frame')
-        self.analyzer_frame_queue.put({'c_s_lrvf': (low_res_video_frames, fps)})
-        self.widgets['analyzer_frame'].collect()
+
+        try:
+            low_res_video_frames, fps = self.project_handler.analyse(
+                screen_size,
+                framerate=fps)
+            logger.debug('passing results to analyzer frame')
+            self.analyzer_frame_queue.put({'c_s_lrvf': (low_res_video_frames, fps)})
+            self.widgets['analyzer_frame'].collect()
+
+        except PictureError as e:
+            logger.error(e)
+
         self._stop_progress_bar()
 
     def check_scratch(self):
