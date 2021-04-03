@@ -25,14 +25,12 @@ for i, pic_class in enumerate(BasePicture.subclasses.keys()):
         f'{i}'
     ]
 
-filename = os.path.join(os.environ[mv_scratch_key], 'test_ph_handler.pkl')
-
 
 class TestProjectHandler(unittest.TestCase):
 
     def test_project_handler(self):
 
-        ph = ProjectHandler.get_project_handler(filename=filename)
+        ph = ProjectHandler('test_ph_handler', os.environ[mv_scratch_key])
         ph.sound_files = sounds
         ph.pictures = pictures
         ph._main_sound_file = example_song
