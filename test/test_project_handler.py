@@ -17,7 +17,7 @@ pictures['bg'] = [
     '0'
 ]
 
-for i, pic_class in enumerate(BasePicture.subclasses()):
+for i, pic_class in enumerate(BasePicture.subclasses.keys()):
 
     pictures[f'{i}'] = [
         pic_class,
