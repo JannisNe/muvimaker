@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/JannisNe/muvi_maker.svg?branch=master)](https://travis-ci.com/JannisNe/muvi_maker)
 # MuviMaker
 MuviMaker is a package that generates moving images from a sound file.
 
