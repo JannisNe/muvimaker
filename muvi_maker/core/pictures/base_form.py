@@ -77,8 +77,8 @@ class BaseForm(BasePicture, abc.ABC):
 
         self.color = color
 
-    @abc.abstractmethod
     @property
+    @abc.abstractmethod
     def form(self):
         pass
 
