@@ -11,4 +11,4 @@ env:
   global:
   - MUVI_SCRATCH: ~/
 script:
-  - python -m unittest discover ./tests/
+  - python -m unittest discover test/
