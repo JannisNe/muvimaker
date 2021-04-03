@@ -10,5 +10,6 @@ matrix:
 env:
   global:
   - MUVI_SCRATCH: ~/
+  - DISPLAY: 0.0
 script:
   - python -m unittest discover test/
