@@ -6,7 +6,7 @@ import numpy as np
 
 from muvi_maker import main_logger, mv_scratch_key
 from muvi_maker.core.sound import Sound, SoundError
-from muvi_maker.core.pictures import BasePicture
+from muvi_maker.core.pictures import BasePicture, PictureError
 from muvi_maker.core.video import Video
 
 
@@ -149,6 +149,12 @@ class ProjectHandler:
             picture, ind = self.get_picture(n, screen_size, framerate, hoplength)
             logger.debug(f'adding picture of class {type(picture)} at indice {ind}')
             l[ind] = picture
+
+        isnone = [isinstance(p, type(None)) for p in l]
+        if np.any(isnone):
+            ind = np.where(isnone)[0]
+            raise PictureError(f'Indice {ind} does not contain any Picture!')
+
         return l
 
     # ==========================================  Video  ========================================== #
