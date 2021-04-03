@@ -1,6 +1,6 @@
 language: python
 install:
-- pip install -e .
+- pip install -r requirements
 matrix:
   include:
   - python: 3.6
