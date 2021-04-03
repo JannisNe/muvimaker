@@ -11,19 +11,19 @@ logger = main_logger.getChild(__name__)
 sounds = {'main': example_song}
 
 pictures = dict()
-pictures['bg'] = {
+pictures['bg'] = [
     'background',
     ['colour: 0'],
     '0'
-}
+]
 
 for i, pic_class in enumerate(BasePicture.subclasses()):
 
-    pictures[f'{i}'] = {
+    pictures[f'{i}'] = [
         pic_class,
         ['colour: main', 'radius: main'],
         f'{i}'
-    }
+    ]
 
 filename = os.path.join(os.environ[mv_scratch_key], 'test_ph_handler.pkl')
 
@@ -37,7 +37,7 @@ class TestProjectHandler(unittest.TestCase):
         ph.pictures = pictures
         ph._main_sound_file = example_song
         video = ph.get_video(
-            standard_screen_size, 
+            standard_screen_size,
             standard_hop_length,
             standard_framerate
         )
