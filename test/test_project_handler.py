@@ -14,7 +14,7 @@ pictures = dict()
 pictures['bg'] = [
     'background',
     ['colour: 0'],
-    '0'
+    0
 ]
 
 for i, pic_class in enumerate(BasePicture.subclasses.keys()):
@@ -22,7 +22,7 @@ for i, pic_class in enumerate(BasePicture.subclasses.keys()):
     pictures[f'{i}'] = [
         pic_class,
         ['colour: main', 'radius: main'],
-        f'{i}'
+        i
     ]
 
 
