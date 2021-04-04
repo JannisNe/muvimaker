@@ -18,14 +18,16 @@ pictures['bg'] = [
     0
 ]
 
-for i, pic_class in enumerate(BasePicture.subclasses.keys()):
+j = 0
+for pic_class in BasePicture.subclasses.keys():
     if pic_class == 'background':
         continue
-    pictures[f'{i}'] = [
+    pictures[f'{j}'] = [
         pic_class,
         ['colour: main', 'radius: main'],
-        i
+        j
     ]
+    j += 1
 
 
 class TestProjectHandler(unittest.TestCase):
