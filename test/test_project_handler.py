@@ -18,7 +18,8 @@ pictures['bg'] = [
     0
 ]
 
-j = 0
+j = 1
+
 for pic_class in BasePicture.subclasses.keys():
     if pic_class == 'background':
         continue
@@ -33,9 +34,10 @@ for pic_class in BasePicture.subclasses.keys():
 class TestProjectHandler(unittest.TestCase):
 
     def test_project_handler(self):
-
         ph = ProjectHandler('test_ph_handler', os.environ[mv_scratch_key])
         ph.sound_files = sounds
+        classes = [l[0] for l in pictures.values()]
+        logger.debug(f'testing classes {classes}')
         ph.pictures = pictures
         ph._main_sound_file = example_song
         video = ph.get_video(
