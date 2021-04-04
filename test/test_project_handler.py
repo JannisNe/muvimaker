@@ -23,7 +23,7 @@ j = 1
 for pic_class in BasePicture.subclasses.keys():
     if pic_class == 'background':
         continue
-    pictures[f'{j}'] = [
+    pictures[f'{j}: {pic_class}'] = [
         pic_class,
         ['colour: main', 'radius: main'],
         j
@@ -45,7 +45,7 @@ class TestProjectHandler(unittest.TestCase):
             standard_hop_length,
             standard_framerate
         )
-        video.make_frame_per_frame(0)
+        video.make_frame_per_frame(10)
 
 
 # if __name__ == '__main__':
