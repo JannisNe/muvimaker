@@ -6,6 +6,7 @@ from muvi_maker.example_data import example_song
 from muvi_maker.core.pictures.base_picture import BasePicture
 
 
+main_logger.setLevel('DEBUG')
 logger = main_logger.getChild(__name__)
 
 sounds = {'main': example_song}
@@ -19,7 +20,7 @@ pictures['bg'] = [
 
 for i, pic_class in enumerate(BasePicture.subclasses.keys()):
     if pic_class == 'background':
-        pass
+        continue
     pictures[f'{i}'] = [
         pic_class,
         ['colour: main', 'radius: main'],
@@ -43,6 +44,6 @@ class TestProjectHandler(unittest.TestCase):
         video.make_frame_per_frame(0)
 
 
-if __name__ == '__main__':
-    main_logger.setLevel('DEBUG')
-    unittest.main()
+# if __name__ == '__main__':
+#     main_logger.setLevel('DEBUG')
+#     unittest.main()
