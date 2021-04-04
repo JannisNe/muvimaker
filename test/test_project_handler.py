@@ -18,7 +18,8 @@ pictures['bg'] = [
 ]
 
 for i, pic_class in enumerate(BasePicture.subclasses.keys()):
-
+    if pic_class == 'background':
+        pass
     pictures[f'{i}'] = [
         pic_class,
         ['colour: main', 'radius: main'],
@@ -40,3 +41,8 @@ class TestProjectHandler(unittest.TestCase):
             standard_framerate
         )
         video.make_frame_per_frame(0)
+
+
+if __name__ == '__main__':
+    main_logger.setLevel('DEBUG')
+    unittest.main()
