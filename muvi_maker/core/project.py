@@ -133,6 +133,7 @@ class ProjectHandler:
         self.pictures[new_filename.split(os.sep)[-1].split('.')[0]] = new_filename
 
     def get_picture(self, name, screen_size, framerate, hoplength):
+        logger.debug(f'getting picture with name {name}')
         picture_class, picture_params_list, ind = self.pictures[name]
 
         param_info = dict()
