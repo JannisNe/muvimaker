@@ -17,7 +17,7 @@ class BaseForm(BasePicture, abc.ABC):
         super(BaseForm, self).__init__(sound_dict, param_info, screen_size)
 
         self.surface = None
-        self.kwargs=None
+        self.kwargs= dict()
 
         # --------------------- Position ----------------------- #
         rel_center = param_info.get('center', '1, 1')
