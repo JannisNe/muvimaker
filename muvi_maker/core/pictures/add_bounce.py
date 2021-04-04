@@ -23,21 +23,23 @@ def add_bounce(class_name):
             self.max_stroke_width = float(param_info.pop('max_stroke_width', 8))
             self.min_stroke_width = float(param_info.pop('min_stroke_width', 1))
             self.stroke_width_decline_order = float(param_info.pop('stroke_width_decline_order', 2))
+            self._b = (self.min_stroke_width - self.max_stroke_width * self.multiplicity ** self.stroke_width_decline_order) / \
+                (1 - self.multiplicity ** self.stroke_width_decline_order)
+            self._a = self.max_stroke_width - self._b
 
             super().__init__(sound_dict, param_info, screen_size)
 
         def stroke_width(self, j):
-            b = (self.min_stroke_width - self.max_stroke_width * self.multiplicity ** self.stroke_width_decline_order) / \
-                (1 - self.multiplicity ** self.stroke_width_decline_order)
-            a = self.max_stroke_width - b
-            return a * j ** self.stroke_width_decline_order + b
+            return self._a * j ** self.stroke_width_decline_order + self._b
 
         def draw(self, ind):
+            logger.debug(f'drawing form for indice {ind}')
             super().draw(ind)
 
             for i in range(self.multiplicity):
                 j = i + 1
                 if ind > j:
+                    logger.debug(f'adding bounce nr {j} for form {self.form}')
                     form = getattr(gizeh, self.form)(
                         self.radius[ind - j] * (self.radius_add + j) * self.radius_factor,
                         xy=self.center,
