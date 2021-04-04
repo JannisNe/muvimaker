@@ -14,7 +14,7 @@ logger = main_logger.getChild(__name__)
 class BaseForm(BasePicture, abc.ABC):
 
     def __init__(self, sound_dict, param_info, screen_size):
-        super(BaseForm, self).__init__(sound_dict, param_info, screen_size)
+        super().__init__(sound_dict, param_info, screen_size)
 
         self.surface = None
         self.kwargs= dict()
@@ -77,10 +77,10 @@ class BaseForm(BasePicture, abc.ABC):
 
         self.color = color
 
-    @property
-    @abc.abstractmethod
-    def form(self):
-        pass
+    # @property
+    # @abc.abstractmethod
+    # def form(self):
+    #     pass
 
     def create_surface(self):
         self.surface = gizeh.Surface(int(self.screen_size[0] * 2), int(self.screen_size[1] * 2))
@@ -90,11 +90,13 @@ class BaseForm(BasePicture, abc.ABC):
         self.draw(ind)
         return self.surface.get_npimage(transparent=True)
 
+    @abc.abstractmethod
     def draw(self, ind):
-        form = getattr(gizeh, self.form)(
-            self.radius[ind],
-            xy=self.center,
-            fill=self.color[ind],
-            **self.kwargs
-        )
-        form.draw(self.surface)
+        pass
+        # form = getattr(gizeh, self.form)(
+        #     self.radius[ind],
+        #     xy=self.center,
+        #     fill=self.color[ind],
+        #     **self.kwargs
+        # )
+        # form.draw(self.surface)

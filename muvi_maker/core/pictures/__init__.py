@@ -1,7 +1,7 @@
 from .base_picture import BasePicture, PictureError
 from .star import Star
 from .circle import Circle
-from .add_bounce import *
 from .background import Background
 from .meta_circle import MetaCircle
-
+from .star_with_bounce import StarWithBounce
+from .circle_with_bounce import CircleWithBounce
