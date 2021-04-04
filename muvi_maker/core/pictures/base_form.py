@@ -92,7 +92,7 @@ class BaseForm(BasePicture, abc.ABC):
 
     def draw(self, ind):
         form = getattr(gizeh, self.form)(
-            radius=self.radius[ind],
+            self.radius[ind],
             xy=self.center,
             fill=self.color[ind],
             **self.kwargs
