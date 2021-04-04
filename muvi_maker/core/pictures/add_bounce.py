@@ -10,7 +10,7 @@ logger = main_logger.getChild(__name__)
 def add_bounce(class_name):
 
     cls = BasePicture.subclasses[class_name]
-    class_with_bounce_name = f'{cls}_with_bounce'
+    class_with_bounce_name = f'{class_name}_with_bounce'
 
     @BasePicture.register_subclass(class_with_bounce_name)
     class DynamicBounceClass(cls):
@@ -39,7 +39,7 @@ def add_bounce(class_name):
                 j = i + 1
                 if ind > j:
                     form = getattr(gizeh, self.form)(
-                        radius=self.radius[ind - j] * (self.radius_add + j) * self.radius_factor,
+                        self.radius[ind - j] * (self.radius_add + j) * self.radius_factor,
                         xy=self.center,
                         fill=None,
                         stroke=self.color[ind - j],
