@@ -11,7 +11,6 @@ from .base_form import BaseForm
 logger = main_logger.getChild(__name__)
 
 
-@BasePicture.register_subclass('meta_circle')
 class MetaPicture(BasePicture, abc.ABC):
 
     def __init__(self, sound_dictionary, param_info, screen_size):
