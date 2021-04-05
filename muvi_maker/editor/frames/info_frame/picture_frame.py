@@ -18,7 +18,7 @@ class PicturesFrame(tk.LabelFrame):
 
         self._setup_widgets()
 
-        self.columnconfigure((0), weight=4)
+        self.columnconfigure((0), weight=10)
         self.columnconfigure((1), weight=1)
 
     def _setup_widgets(self):
@@ -68,6 +68,8 @@ class PicturesFrame(tk.LabelFrame):
             indice = np.where(np.array(l) == name)[0]
         else:
             indice = np.atleast_1d(ind)[0]
+            if indice == 'end':
+                indice = len(l)
             self.pictures_listbox.insert(ind, name)
 
         self._info_dict[name] = [picture_file, attributes_list, indice]
