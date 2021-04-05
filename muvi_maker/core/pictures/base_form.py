@@ -38,7 +38,7 @@ class BaseForm(BasePicture, abc.ABC):
 
         # ---------------------- Radius ------------------------ #
         radius_sound_name = param_info['radius']
-        max_radius = float(param_info.get('max_radius', min(self.screen_size) / 2))
+        max_radius = float(param_info.get('max_radius',  0.5)) * min(self.screen_size)
         radius_smooth = int(param_info.get('radius_smooth', 1))
 
         radius_sound = self.sound_dict[radius_sound_name]
