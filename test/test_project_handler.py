@@ -23,11 +23,14 @@ j = 1
 for pic_class in BasePicture.subclasses.keys():
     if pic_class == 'background':
         continue
-    pictures[f'{j}: {pic_class}'] = [
+    n = f'{j}: {pic_class}'
+    pictures[n] = [
         pic_class,
         ['colour: main', 'radius: main'],
         j
     ]
+    if 'meta' in pic_class:
+        pictures[n][1].append('pictures_class: star')
     j += 1
 
 
