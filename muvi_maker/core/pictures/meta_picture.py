@@ -1,7 +1,6 @@
 import numpy as np
-import abc
+import abc, gizeh, math
 from PIL import Image
-import gizeh
 
 from muvi_maker import main_logger
 from .base_picture import BasePicture, PictureError
@@ -17,22 +16,24 @@ class MetaPicture(BasePicture, abc.ABC):
 
         self.pictures_class = param_info['pictures_class']
         self.meta_multiplicity = int(param_info.pop('meta_multiplicity', '5'))
-        self.meta_center = param_info.pop('meta_center', '1, 1')
+        meta_center = param_info.pop('meta_center', '1, 1')
+        self.meta_center = np.array([float(i) for i in meta_center.split(', ')]) * np.array(screen_size)
 
-        # given in seconds or attribute of sound that determines the period
-        meta_period = param_info.pop('meta_period', '10')
+        # given in frames or attribute of sound that determines the period
+        meta_period = param_info.pop('meta_period', '100')
 
         if isinstance(meta_period, str):
 
-            if meta_period in self.sound_dict:
+            if meta_period in sound_dictionary:
                 # period will be determined by a Sound instance
-                power = self.sound_dict[meta_period].get_power()
+                power = sound_dictionary[meta_period].get_power()
                 meta_min_period = param_info.pop('meta_min_period')
                 p = np.minimum(power / max(power), meta_min_period)
                 self.meta_period = p
 
             else:
-                self.meta_period = float(meta_period)
+                length = len(list(sound_dictionary.values())[0].get_power())
+                self.meta_period = np.array([float(meta_period)] * length)
 
         else:
             self.meta_period = meta_period
