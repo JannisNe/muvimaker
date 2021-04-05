@@ -17,6 +17,8 @@ class SoundFilesFrame(tk.LabelFrame):
         self._info_dict = dict()
 
         self._setup_widgets()
+        self.columnconfigure((0, 1), weight=1)
+        self.rowconfigure(1, weight=1)
 
     def _setup_widgets(self):
 

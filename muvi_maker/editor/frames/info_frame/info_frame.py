@@ -16,6 +16,8 @@ class InfoFrame(tk.Frame):
         self.sound_files_frame = None
         self.pictures_frame = None
         self._setup_widgets()
+        self.columnconfigure((0, 1), weight=1)
+        self.rowconfigure(0, weight=1)
 
     def _setup_widgets(self):
         sound_files_frame = SoundFilesFrame(self)
