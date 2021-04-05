@@ -49,11 +49,11 @@ class Editor(tk.Frame):
         self.active.trace('w', lambda *_: self._set_widgets_attribute('state', self.active.get()))
 
         self._setup_widgets()
+
+        self.parent.columnconfigure(1, weight=1)
+        self.parent.columnconfigure(0, weight=10)
+        self.parent.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.check_scratch()
-        
-        self.parent.columnconfigure((0,1,2,3,4,5,6,7,8,10,11), weight=1)
-        self.parent.columnconfigure(9, weight=4)
-        self.parent.rowconfigure((0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), weight=1)
 
     # ------------------    properties   --------------------- #
 
@@ -118,33 +118,33 @@ class Editor(tk.Frame):
 
         infoframe = InfoFrame(self)
         self.add_widget('info_frame', infoframe)
-        infoframe.grid(row=0, column=0, columnspan=12, sticky='nsew')
+        infoframe.grid(row=0, column=0, columnspan=2, sticky='nsew')
 
         logging_frame = LoggingFrame(self.master)
         self.add_widget('logging_frame', logging_frame)
-        logging_frame.grid(row=5, column=0, columnspan=13, sticky='nsew')
+        logging_frame.grid(row=4, column=0, columnspan=2, sticky='nsew')
 
         parameters_frame = ParametersFrame(self.master, width=10)
         self.add_widget('parameters_frame', parameters_frame)
-        parameters_frame.grid(row=2, column=10, sticky='nsew')
+        parameters_frame.grid(row=1, column=1, sticky='nsew')
 
         analyzer_frame = AnalyzerFrame(self)
         self.add_widget('analyzer_frame', analyzer_frame)
-        analyzer_frame.grid(row=2, column=9, rowspan=3, sticky='nsew')
+        analyzer_frame.grid(row=1, column=0, rowspan=3, columnspan=1, sticky='nsew')
 
         progress_bar = ttk.Progressbar(self.master, orient='horizontal', mode='indeterminate', length=100)
-        progress_bar.grid(row=6, column=0, columnspan=12, sticky='nsew')
+        progress_bar.grid(row=5, column=0, columnspan=2, sticky='nsew')
         self.add_widget('progress_bar', progress_bar)
 
         analyse_button = tk.Button(self.master, text='analyse', height=5, width=10, state=self.active.get(),
                                    command=self.analyse)
-        analyse_button.grid(row=3, column=10, sticky='nsew')
+        analyse_button.grid(row=2, column=1, sticky='nsew')
         self.add_widget('analyse_button', analyse_button)
 
         make_video_button = tk.Button(self.master, text='make video', height=5, width=10, state=self.active.get(),
                                       command=self.make_video)
         make_video_button['font'] = font.Font(weight='bold')
-        make_video_button.grid(row=4, column=10, sticky='nsew')
+        make_video_button.grid(row=3, column=1, sticky='nsew')
         self.add_widget('make_video_button', make_video_button)
 
     # ----------------------------------   Functions  ---------------------------------------------- #
