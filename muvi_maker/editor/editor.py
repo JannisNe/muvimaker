@@ -57,16 +57,6 @@ class Editor(tk.Frame):
 
     # ------------------    properties   --------------------- #
 
-    # @property
-    # def soundfile(self):
-    #     return self._soundfile
-
-    # @soundfile.setter
-    # def soundfile(self, value):
-    #     # self._soundfile.set(value)
-    #     self.project_handler.add_sound(value)
-    #     self.active.set('normal')
-
     @property
     def videofile(self):
         return self._videofile
@@ -130,21 +120,25 @@ class Editor(tk.Frame):
 
         analyzer_frame = AnalyzerFrame(self)
         self.add_widget('analyzer_frame', analyzer_frame)
-        analyzer_frame.grid(row=1, column=0, rowspan=3, columnspan=1, sticky='nsew')
+        analyzer_frame.grid(row=1, column=0, columnspan=1, rowspan=3, sticky='nsew')
 
         progress_bar = ttk.Progressbar(self.master, orient='horizontal', mode='indeterminate', length=100)
         progress_bar.grid(row=5, column=0, columnspan=2, sticky='nsew')
         self.add_widget('progress_bar', progress_bar)
 
-        analyse_button = tk.Button(self.master, text='analyse', height=5, width=10, state=self.active.get(),
+        analyse_button = tk.Button(self.master, text='analyse',
+                                   height=5, width=10,
+                                   state=self.active.get(),
                                    command=self.analyse)
-        analyse_button.grid(row=2, column=1, sticky='nsew')
+        analyse_button.grid(row=2, column=1)#, sticky='nsew')
         self.add_widget('analyse_button', analyse_button)
 
-        make_video_button = tk.Button(self.master, text='make video', height=5, width=10, state=self.active.get(),
+        make_video_button = tk.Button(self.master, text='make video',
+                                      height=5, width=10,
+                                      state=self.active.get(),
                                       command=self.make_video)
         make_video_button['font'] = font.Font(weight='bold')
-        make_video_button.grid(row=3, column=1, sticky='nsew')
+        make_video_button.grid(row=3, column=1)#, sticky='nsew')
         self.add_widget('make_video_button', make_video_button)
 
     # ----------------------------------   Functions  ---------------------------------------------- #
