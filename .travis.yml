@@ -15,7 +15,7 @@ env:
   global:
   - MUVI_SCRATCH: ~/
 script:
-  - coverage run --concurrency=multiprocessing -m unittest discover tests/
+  - coverage run --concurrency=multiprocessing -m unittest discover test/
   - coverage combine
 after_success:
   - coveralls
