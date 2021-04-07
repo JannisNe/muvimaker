@@ -14,6 +14,8 @@ matrix:
 env:
   global:
   - MUVI_SCRATCH: ~/
-  - DISPLAY: 0.0
 script:
-  - python -m unittest discover test/
+  - coverage run --concurrency=multiprocessing -m unittest discover tests/
+  - coverage combine
+after_success:
+  - coveralls
