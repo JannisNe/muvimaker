@@ -48,16 +48,29 @@ class BaseDialogue(tk.Toplevel):
         raise NotImplementedError('To be implemented in subclasses!')
 
 
-class OpenFileDialogue(BaseDialogue):
+class BrowseDialogue(BaseDialogue):
 
     def start_mainloop(self):
         self.entry.bind('<1>', self.browse)
         self.mainloop()
 
+    def browse_function(self):
+        raise NotImplementedError('To be implemented in subclasses')
+
     def browse(self, event):
-        filename = fd.askopenfilename()
+        filename = self.browse_function()
         self.entry.delete(0, 'end')
         self.entry.insert(0, filename)
 
     def button_action(self):
         raise NotImplementedError('To be implemented in subclasses')
+
+
+class OpenFileDialogue(BrowseDialogue):
+    def browse_function(self):
+        return fd.askopenfilename()
+
+
+class OpenDirectoryDialoge(BrowseDialogue):
+    def browse_function(self):
+        return  fd.askdirectory()
