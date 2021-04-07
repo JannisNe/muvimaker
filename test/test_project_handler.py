@@ -33,11 +33,13 @@ for pic_class in BasePicture.subclasses.keys():
         pictures[n][1].append('pictures_class: star')
     j += 1
 
+ph_name = 'test_ph_handler'
+
 
 class TestProjectHandler(unittest.TestCase):
 
     def test_project_handler(self):
-        ph = ProjectHandler('test_ph_handler', os.environ[mv_scratch_key])
+        ph = ProjectHandler(ph_name, os.environ[mv_scratch_key])
         ph.sound_files = sounds
         classes = [l[0] for l in pictures.values()]
         logger.debug(f'testing classes {classes}')
@@ -49,3 +51,8 @@ class TestProjectHandler(unittest.TestCase):
             standard_framerate
         )
         video.make_frame_per_frame(10)
+        ph.save_me()
+
+    def test_load_project_handler(self):
+        ph = ProjectHandler.get_project_handler(ph_name)
+        ph.make_frame_per_frame(11)
