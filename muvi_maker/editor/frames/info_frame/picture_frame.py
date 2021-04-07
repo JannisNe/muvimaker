@@ -18,30 +18,30 @@ class PicturesFrame(tk.LabelFrame):
 
         self._setup_widgets()
 
-        self.columnconfigure((0), weight=10)
-        self.columnconfigure((1), weight=1)
+        self.columnconfigure((0, 1), weight=10)
+        self.columnconfigure(2, weight=1)
 
     def _setup_widgets(self):
 
         # Listbox that will contain the files and names
         pictures_list = tk.Listbox(self)
-        pictures_list.grid(row=0, column=0, columnspan=2, rowspan=2, sticky='nsew')
+        pictures_list.grid(row=0, column=0, rowspan=2, columnspan=2, sticky='nsew')
         pictures_list.bind('<Double-Button-1>', self._change_file)
         self.pictures_listbox = pictures_list
 
         # button to add files
         add_button = tk.Button(self, text='Add', command=self._add_file)
-        add_button.grid(row=2, column=0, sticky='nsew')
+        add_button.grid(row=2, column=0)#, sticky='nsew')
 
         # add button to delete files
         delete_button = tk.Button(self, text='Delete', command=self._delete_file)
-        delete_button.grid(row=2, column=1, sticky='nsew')
+        delete_button.grid(row=2, column=1)#, sticky='nsew')
 
         # add buttons to move the items up and down
         up_button = tk.Button(self, text='UP', command=self._move_item_up)
-        up_button.grid(row=0, column=1, sticky='nsew')
+        up_button.grid(row=0, column=2, sticky='nsew')
         down_button = tk.Button(self, text='DOWN', command=self._move_item_down)
-        down_button.grid(row=1, column=1, sticky='nsew')
+        down_button.grid(row=1, column=2, sticky='nsew')
 
     def update_listbox(self):
         self.pictures_listbox.delete(0, tk.END)
@@ -72,7 +72,7 @@ class PicturesFrame(tk.LabelFrame):
                 indice = len(l)
             self.pictures_listbox.insert(ind, name)
 
-        self._info_dict[name] = [picture_file, attributes_list, indice]
+        self._info_dict[name] = [picture_file, attributes_list, str(indice)]
         self._parse_info_to_ph()
 
     def _add_file(self):
@@ -84,8 +84,8 @@ class PicturesFrame(tk.LabelFrame):
         pic_file, attributes_list, ind = self._info_dict[name]
         logger.debug(f'{pic_file} {attributes_list}, {indice}')
 
-        if not indice[0] == ind:
-            raise ValueError(f'indice in listbox {indice} is not indice from info {ind}')
+        if not int(indice[0]) == int(ind):
+            raise ValueError(f'indice in listbox {indice[0]} is not indice from info {ind}')
 
         self.pictures_listbox.delete(indice)
         AddPictureDialogue(self,
@@ -127,15 +127,15 @@ class PicturesFrame(tk.LabelFrame):
 
         # adjust all affected indices
         for name, info in self._info_dict.items():
-            iind = info[-1]
+            iind = int(info[-1])
 
             if indice < new_indice:
                 if (iind > indice) and (iind <= new_indice):
-                    self._info_dict[name][-1] = iind - 1
+                    self._info_dict[name][-1] = str(iind - 1)
 
             if indice > new_indice:
                 if (iind < indice) and (iind >= new_indice):
-                    self._info_dict[name][-1] = iind + 1
+                    self._info_dict[name][-1] = str(iind + 1)
 
-        self._info_dict[entry_to_be_moved][-1] = new_indice
+        self._info_dict[entry_to_be_moved][-1] = str(new_indice)
         self._parse_info_to_ph()
