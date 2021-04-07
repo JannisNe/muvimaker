@@ -30,11 +30,11 @@ class SoundFilesFrame(tk.LabelFrame):
 
         # button to add files
         add_button = tk.Button(self, text='Add', command=self._add_file)
-        add_button.grid(row=1, column=0, sticky='nsew')
+        add_button.grid(row=1, column=0)
 
         # add button to delete files
         delete_button = tk.Button(self, text='Delete', command=self._delete_file)
-        delete_button.grid(row=1, column=1, sticky='nsew')
+        delete_button.grid(row=1, column=1)
 
     def update_listbox(self):
         self.soundfiles_listbox.delete(0, tk.END)
