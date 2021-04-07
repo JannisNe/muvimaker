@@ -49,8 +49,3 @@ class TestProjectHandler(unittest.TestCase):
             standard_framerate
         )
         video.make_frame_per_frame(10)
-
-
-# if __name__ == '__main__':
-#     main_logger.setLevel('DEBUG')
-#     unittest.main()
