@@ -55,4 +55,9 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_load_project_handler(self):
         ph = ProjectHandler.get_project_handler(ph_name)
-        ph.make_frame_per_frame(11)
+        video = ph.get_video(
+            standard_screen_size,
+            standard_hop_length,
+            standard_framerate
+        )
+        video.make_frame_per_frame(11)
