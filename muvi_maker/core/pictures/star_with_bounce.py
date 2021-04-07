@@ -13,13 +13,11 @@ logger = main_logger.getChild(__name__)
 class StarWithBounce(Star, BaseBounce):
 
     def draw(self, ind):
-        logger.debug(f'drawing form for indice {ind}')
         super().draw(ind)
 
         for i in range(self.multiplicity):
             j = i + 1
             if ind > j:
-                logger.debug(f'adding bounce nr {j} for star')
                 form = gizeh.star(
                     radius=self.radius[ind - j] * (self.radius_add + j) * self.radius_factor,
                     xy=self.center,
