@@ -6,3 +6,4 @@ jupyterlab
 pillow
 gizeh
 ffmpeg
+coveralls
