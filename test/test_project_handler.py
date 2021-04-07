@@ -39,6 +39,7 @@ ph_name = 'test_ph_handler'
 class TestProjectHandler(unittest.TestCase):
 
     def test_project_handler(self):
+        logger.info('testing project handler')
         ph = ProjectHandler(ph_name, os.environ[mv_scratch_key])
         ph.sound_files = sounds
         classes = [l[0] for l in pictures.values()]
@@ -53,7 +54,8 @@ class TestProjectHandler(unittest.TestCase):
         video.make_frame_per_frame(10)
         ph.save_me()
 
-    def test_load_project_handler(self):
+    def test_zload_project_handler(self):
+        logger.debug('testing a loaded project handler')
         ph = ProjectHandler.get_project_handler(ph_name)
         video = ph.get_video(
             standard_screen_size,

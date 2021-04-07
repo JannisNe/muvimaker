@@ -18,7 +18,6 @@ class ProjectHandler:
 
     def __init__(self, name, directory):
 
-        # self.name = filename.split(os.sep)[-1].split('.')[0]
         self.name = name
 
         self.home_directory = directory
@@ -34,12 +33,8 @@ class ProjectHandler:
         self.videos = dict()
 
         self._main_soundfile = None
-
         self.analyzer_results = None
-
         self.length = None
-
-        # self.save_me()
 
     @property
     def indir(self):
@@ -78,10 +73,6 @@ class ProjectHandler:
         return [self.home_directory,
                 self.indir, self.outdir, self.storage_dir,
                 self.sound_dir, self.picture_dir]
-
-    @property
-    def filename(self):
-        return f'{self.home_directory}/{self.name}.pkl'
 
     def save_me(self):
         for ff, attr in zip([self.pictures_file, self.sounds_file, self.analyser_results_file],
@@ -131,15 +122,10 @@ class ProjectHandler:
         elif name and not directory:
             directory = f"{mv_scratch}/{name}"
 
+        logger.debug(f'loading project handler {name} from {directory}')
         ph = ProjectHandler(name, directory)
         ph.load_me()
         return ph
-
-    # @staticmethod
-    # def _load_project_handler_pkl(filename):
-    #     with open(filename, 'rb') as f:
-    #         ph = pickle.load(f)
-    #     return ph
 
     # ===========================================  Sound  =========================================== #
 
@@ -178,15 +164,6 @@ class ProjectHandler:
         return d
 
     # ==========================================  Pictures  ========================================== #
-
-    # def add_picture(self, filename):
-    #     new_filename = f'{self.picture_dir}/{filename.split(os.sep)[-1]}'
-    #
-    #     if not filename.startswith(os.path.abspath(self.indir) + os.path.sep):
-    #         logger.debug(f'copying {filename} to {new_filename}')
-    #         shutil.copy2(filename, new_filename)
-    #
-    #     self.pictures[new_filename.split(os.sep)[-1].split('.')[0]] = new_filename
 
     def get_picture(self, name, screen_size, framerate, hoplength):
         logger.debug(f'getting picture with name {name}')
