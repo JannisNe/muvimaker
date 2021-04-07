@@ -40,7 +40,7 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_project_handler(self):
         logger.info('testing project handler')
-        ph = ProjectHandler(ph_name, os.environ[mv_scratch_key])
+        ph = ProjectHandler.get_project_handler(ph_name)
         ph.sound_files = sounds
         classes = [l[0] for l in pictures.values()]
         logger.debug(f'testing classes {classes}')
