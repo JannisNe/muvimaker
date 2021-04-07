@@ -16,7 +16,7 @@ class ConsoleUi:
         self.frame = frame
 
         # Create a ScrolledText wdiget
-        self.scrolled_text = st.ScrolledText(frame, state='disabled', height=3)
+        self.scrolled_text = st.ScrolledText(frame, state='disabled', height=7)
         self.scrolled_text.grid(row=0, column=0, sticky='nsew')
         self.scrolled_text.configure(font=('TkFixedFont', 10))
         self.scrolled_text.tag_config('INFO', foreground='black')
