@@ -1,6 +1,4 @@
-import os
-import shutil
-import pickle
+import os, shutil, pickle, json
 from tqdm import tqdm
 import numpy as np
 
@@ -18,21 +16,12 @@ standard_screen_size = (1280, 720)
 
 class ProjectHandler:
 
-    def __init__(self, filename, directory):
+    def __init__(self, name, directory):
 
-        self.name = filename.split(os.sep)[-1].split('.')[0]
+        # self.name = filename.split(os.sep)[-1].split('.')[0]
+        self.name = name
 
         self.home_directory = directory
-        self.indir = f'{self.home_directory}/input'
-        self.outdir = f'{self.home_directory}/output'
-        self.storage_dir = f'{self.home_directory}/storage'
-        
-        self.sound_dir = f'{self.indir}/sounds'
-        self.picure_dir = f'{self.indir}/pictures'
-
-        self.directories = [self.home_directory,
-                            self.indir, self.outdir, self.storage_dir,
-                            self.sound_dir, self.picure_dir]
 
         # setting up directory structure
         for directory in self.directories:
@@ -50,40 +39,107 @@ class ProjectHandler:
 
         self.length = None
 
-        self.save_me()
+        # self.save_me()
+
+    @property
+    def indir(self):
+        return f'{self.home_directory}/input'
+
+    @property
+    def outdir(self):
+        return f'{self.home_directory}/output'
+
+    @property
+    def storage_dir(self):
+        return f'{self.home_directory}/storage'
+
+    @property
+    def sound_dir(self):
+        return f'{self.indir}/sounds'
+
+    @property
+    def picture_dir(self):
+        return f'{self.indir}/pictures'
+
+    @property
+    def pictures_file(self):
+        return f"{self.picture_dir}/pictures_dict.json"
+
+    @property
+    def sounds_file(self):
+        return f"{self.sound_dir}/sound_dict.json"
+
+    @property
+    def analyser_results_file(self):
+        return f"{self.storage_dir}/analyser_results.pkl"
+
+    @property
+    def directories(self):
+        return [self.home_directory,
+                self.indir, self.outdir, self.storage_dir,
+                self.sound_dir, self.picture_dir]
 
     @property
     def filename(self):
         return f'{self.home_directory}/{self.name}.pkl'
 
     def save_me(self):
-        filename = self.filename
-        logger.debug(f'saving ProjectHandler {self.name} to {filename}')
-        with open(filename, 'wb') as f:
-            pickle.dump(self, f)
+        for ff, attr in zip([self.pictures_file, self.sounds_file, self.analyser_results_file],
+                            ['pictures', 'sound_files', 'analyzer_results']):
+
+            if 'analyzer' in attr:
+                saver = pickle
+                mod = "wb"
+                kw = dict()
+            else:
+                saver = json
+                mod = "w"
+                kw = {'indent': 4, 'sort_keys': True}
+
+            try:
+                logger.debug(f"saving {attr}, to {ff}")
+                with open(ff, mod) as f:
+                    saver.dump(self.__getattribute__(attr), f, **kw)
+            except OSError as e:
+                logger.warning(f"Could not save {attr} to {ff}: {e}")
+
+    def load_me(self):
+
+        for ff, attr in zip([self.pictures_file, self.sounds_file, self.analyser_results_file],
+                            ['pictures', 'sound_files', 'analyzer_results']):
+
+            if 'analyzer' in attr:
+                loader = pickle
+                mod = "rb"
+            else:
+                loader = json
+                mod = "r"
+
+            try:
+                logger.debug(f"loading {attr} from {ff}")
+                with open(ff, mod) as f:
+                    self.__setattr__(attr, loader.load(f))
+            except OSError as e:
+                logger.warning(f"Could not load {attr} from {ff}: {e}")
 
     @staticmethod
-    def get_project_handler(name=None, filename=None, **kwargs):
+    def get_project_handler(name=None, directory=None, **kwargs):
+        mv_scratch = os.environ[mv_scratch_key]
 
-        if isinstance(name, type(None)) and isinstance(filename, type(None)):
-            raise ValueError('Either name or filename must be given!')
+        if not name and directory:
+            name = directory.split(os.sep)[-1]
+        elif name and not directory:
+            directory = f"{mv_scratch}/{name}"
 
-        if name and filename:
-            raise ValueError('name and filename were given! Can only take one of them!')
-
-        if name:
-            mv_scratch = os.environ[mv_scratch_key]
-            filename = f'{mv_scratch}/{name}/{name}.pkl'
-
-        logger.debug(f'getting ProjectHandler {filename}')
-
-        return ProjectHandler._load_project_handler_pkl(filename)
-
-    @staticmethod
-    def _load_project_handler_pkl(filename):
-        with open(filename, 'rb') as f:
-            ph = pickle.load(f)
+        ph = ProjectHandler(name, directory)
+        ph.load_me()
         return ph
+
+    # @staticmethod
+    # def _load_project_handler_pkl(filename):
+    #     with open(filename, 'rb') as f:
+    #         ph = pickle.load(f)
+    #     return ph
 
     # ===========================================  Sound  =========================================== #
 
@@ -123,14 +179,14 @@ class ProjectHandler:
 
     # ==========================================  Pictures  ========================================== #
 
-    def add_picture(self, filename):
-        new_filename = f'{self.picure_dir}/{filename.split(os.sep)[-1]}'
-
-        if not filename.startswith(os.path.abspath(self.indir) + os.path.sep):
-            logger.debug(f'copying {filename} to {new_filename}')
-            shutil.copy2(filename, new_filename)
-
-        self.pictures[new_filename.split(os.sep)[-1].split('.')[0]] = new_filename
+    # def add_picture(self, filename):
+    #     new_filename = f'{self.picture_dir}/{filename.split(os.sep)[-1]}'
+    #
+    #     if not filename.startswith(os.path.abspath(self.indir) + os.path.sep):
+    #         logger.debug(f'copying {filename} to {new_filename}')
+    #         shutil.copy2(filename, new_filename)
+    #
+    #     self.pictures[new_filename.split(os.sep)[-1].split('.')[0]] = new_filename
 
     def get_picture(self, name, screen_size, framerate, hoplength):
         logger.debug(f'getting picture with name {name}')
@@ -142,7 +198,7 @@ class ProjectHandler:
             param_info[attr] = value
 
         sound_dict = self.sound_dictionary(framerate, hoplength)
-        return BasePicture.create(picture_class, sound_dict, param_info, screen_size), ind
+        return BasePicture.create(picture_class, sound_dict, param_info, screen_size), int(ind)
 
     def get_pictures_list(self, screen_size, framerate, hoplength):
         l = np.empty(len(self.pictures.keys()), dtype=object)
