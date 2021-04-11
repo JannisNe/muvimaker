@@ -1,4 +1,4 @@
-import gizeh
+import gizeh, math
 
 from muvi_maker import main_logger
 from .base_picture import BasePicture
@@ -12,11 +12,18 @@ logger = main_logger.getChild(__name__)
 class Star(BaseForm):
 
     def __init__(self, sound_dict, param_info, screen_size):
-        nbranches = int(param_info.pop('nbranches', '10'))
+        self.nbranches = int(param_info.pop('nbranches', '10'))
+        self.angle = float(param_info.pop('angle', '0'))
+        self.period = float(param_info.pop('period', 'inf'))
         super().__init__(sound_dict, param_info, screen_size)
-        self.kwargs['nbranches'] = nbranches
 
     def draw(self, ind):
+        omega = 2 * math.pi / self.period
+        angle = self.angle + omega * float(ind)
+
+        self.kwargs['nbranches'] = self.nbranches
+        self.kwargs['angle'] = angle
+
         star = gizeh.star(
             radius=self.radius[ind],
             xy=self.center,
