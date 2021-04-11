@@ -67,3 +67,13 @@ class TestProjectHandler(unittest.TestCase):
             standard_framerate
         )
         video.get_frame(11)
+
+    def test_c_test_analyse(self):
+        logger.info('\n\n   test analyse function \n\n')
+        ph = ProjectHandler.get_project_handler(ph_name)
+        ph.analyse()
+
+    def test_d_test_make_video(self):
+        logger.info('\n\n   testing making video \n\n')
+        ph = ProjectHandler.get_project_handler(ph_name)
+        ph.make_video()
