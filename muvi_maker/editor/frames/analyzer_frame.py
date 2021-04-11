@@ -18,12 +18,9 @@ class AnalyzerFrame(tk.LabelFrame):
         self.parent = parent
 
         self._low_res_video_images = [np.asarray(Image.open(baby_file))]
-        # self._spectrograph = None
-        # self._color = None
         self._fps = None
         self._pic_size = (1000, 1000)
         self._img = None
-        # self._spec = None
         self._entries = dict()
         self._frame_ind = None
         self._stop = False
@@ -87,12 +84,6 @@ class AnalyzerFrame(tk.LabelFrame):
         self._entries['preview_label'] = preview_label
         self.preview_label = preview_label
 
-        # setting up the label that displays the spectrogram
-        # spec_label = tk.Label(self, image=self._spec)
-        # spec_label.grid(row=0, column=0, sticky='nsew')
-        # self._entries['spec_label'] = spec_label
-        # self.spec_label = spec_label
-        
         # setting up play button
         play_button = tk.Button(self, text='PLAY', fg='green', command=self.play)
         play_button.grid(row=4, column=0)
@@ -104,7 +95,7 @@ class AnalyzerFrame(tk.LabelFrame):
     def _get_pil_image_from_array(self, frame_ind, array):
         img_array = array[frame_ind]
         pil_img = Image.fromarray(img_array)
-        pil_img.thumbnail(self._pic_size)
+        pil_img.resize(self._pic_size)
         img = ImageTk.PhotoImage(image=pil_img)
         return img
 
@@ -117,16 +108,6 @@ class AnalyzerFrame(tk.LabelFrame):
     def _update_preview_label(self, frame_ind):
         self._img = self._get_image(frame_ind)
         self.preview_label.configure(image=self._img)
-
-    # def _get_spectrogram(self, frame_ind):
-    #     if not isinstance(self._spectrograph, type(None)):
-    #         return self._get_pil_image_from_array(frame_ind, self._spectrograph)
-    #     else:
-    #         logger.warning(f'Spectrogram is None!')
-    #
-    # def _update_spectrogram_label(self, frame_ind):
-    #     self._spec = self._get_spectrogram(frame_ind)
-    #     self.spec_label.configure(image=self._spec)
 
     def _change_frame(self, frame_ind_str):
         self.frame_ind = int(frame_ind_str)
