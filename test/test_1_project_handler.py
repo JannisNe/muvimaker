@@ -55,7 +55,7 @@ class TestProjectHandler(unittest.TestCase):
             standard_hop_length,
             standard_framerate
         )
-        video.get_frame(10)
+        video.make_frame_per_frame(10)
         ph.save_me()
 
     def test_b_load_project_handler(self):
@@ -66,7 +66,7 @@ class TestProjectHandler(unittest.TestCase):
             standard_hop_length,
             standard_framerate
         )
-        video.get_frame(11)
+        video.make_frame_per_frame(11)
 
     def test_c_test_analyse(self):
         logger.info('\n\n   test analyse function \n\n')
