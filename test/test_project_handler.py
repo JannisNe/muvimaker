@@ -27,7 +27,7 @@ for pic_class in BasePicture.subclasses.keys():
     pictures[n] = [
         pic_class,
         ['colour: main', 'radius: main'],
-        'j'
+        f'{j}'
     ]
     if 'meta' in pic_class:
         pictures[n][1].append('pictures_class: star')
