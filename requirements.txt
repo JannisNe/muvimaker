@@ -5,5 +5,5 @@ matplotlib
 jupyterlab
 pillow
 gizeh
-ffmpeg
+ffmpeg>=1.4
 coveralls
