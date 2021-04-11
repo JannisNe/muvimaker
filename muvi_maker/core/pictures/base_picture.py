@@ -15,14 +15,21 @@ class BasePicture(abc.ABC):
         self.param_info = param_info
         self.screen_size = screen_size
 
+        self._cached_frames = dict()
+
+    def get_frame(self, ind):
+        if not ind in self._cached_frames:
+            self._cached_frames[ind] = self._make_frame_per_frame(ind)
+        return self._cached_frames[ind]
+
     @abc.abstractmethod
-    def make_frame_per_frame(self, ind):
+    def _make_frame_per_frame(self, ind):
         pass
 
     @classmethod
     def register_subclass(cls, name):
-        """Adds a new subclass of EnergyPDF, with class name equal to
-        "energy_pdf_name".
+        """
+        Adds a new subclass of Picture, with class name equal to "name".
         """
 
         def decorator(subclass):
@@ -33,8 +40,17 @@ class BasePicture(abc.ABC):
 
     @classmethod
     def create(cls, subclass, sound_dictionary, param_info, screen_size):
-        picture_class = cls.subclasses[subclass]
-        return picture_class(sound_dictionary, param_info, screen_size)
+        try:
+            picture_class = cls.subclasses[subclass]
+        except KeyError:
+            raise PictureError(f"Unknown picture class {subclass}! Available are: {cls.subclasses.keys()}")
+
+        try:
+            picture = picture_class(sound_dictionary, param_info, screen_size)
+        except KeyError as e:
+            raise PictureError(e)
+
+        return picture
 
 
 class PictureError(Exception):

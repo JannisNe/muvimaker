@@ -77,15 +77,10 @@ class BaseForm(BasePicture, abc.ABC):
 
         self.color = color
 
-    # @property
-    # @abc.abstractmethod
-    # def form(self):
-    #     pass
-
     def create_surface(self):
         self.surface = gizeh.Surface(int(self.screen_size[0] * 2), int(self.screen_size[1] * 2))
 
-    def make_frame_per_frame(self, ind):
+    def _make_frame_per_frame(self, ind):
         self.create_surface()
         self.draw(ind)
         return self.surface.get_npimage(transparent=True)
@@ -93,10 +88,3 @@ class BaseForm(BasePicture, abc.ABC):
     @abc.abstractmethod
     def draw(self, ind):
         pass
-        # form = getattr(gizeh, self.form)(
-        #     self.radius[ind],
-        #     xy=self.center,
-        #     fill=self.color[ind],
-        #     **self.kwargs
-        # )
-        # form.draw(self.surface)
