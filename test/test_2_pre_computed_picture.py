@@ -13,7 +13,7 @@ ph_name = 'test_ph_handler'
 
 class TestPreComputedPicture(unittest.TestCase):
 
-    def test_picture(self):
+    def test_a_picture(self):
         logger.info('\n\n    test PreComputedPicture\n\n')
         ph = ProjectHandler.get_project_handler(ph_name)
         video = ph.get_video(

@@ -42,7 +42,7 @@ ph_name = 'test_ph_handler'
 
 class TestProjectHandler(unittest.TestCase):
 
-    def test_project_handler(self):
+    def test_a_project_handler(self):
         logger.info('\n\n   testing project handler\n\n')
         ph = ProjectHandler.get_project_handler(ph_name)
         ph.sound_files = sounds
@@ -58,7 +58,7 @@ class TestProjectHandler(unittest.TestCase):
         video.get_frame(10)
         ph.save_me()
 
-    def test_zload_project_handler(self):
+    def test_b_load_project_handler(self):
         logger.info('\n\n    testing a loaded project handler\n\n')
         ph = ProjectHandler.get_project_handler(ph_name)
         video = ph.get_video(
