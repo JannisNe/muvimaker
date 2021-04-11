@@ -15,7 +15,7 @@ pictures = dict()
 pictures['bg'] = [
     'background',
     ['colour: 0'],
-    0
+    '0'
 ]
 
 j = 1
@@ -27,7 +27,7 @@ for pic_class in BasePicture.subclasses.keys():
     pictures[n] = [
         pic_class,
         ['colour: main', 'radius: main'],
-        j
+        'j'
     ]
     if 'meta' in pic_class:
         pictures[n][1].append('pictures_class: star')
@@ -51,15 +51,15 @@ class TestProjectHandler(unittest.TestCase):
             standard_hop_length,
             standard_framerate
         )
-        video.make_frame_per_frame(10)
+        video.get_frame(10)
         ph.save_me()
 
     def test_zload_project_handler(self):
-        logger.debug('testing a loaded project handler')
+        logger.info('testing a loaded project handler')
         ph = ProjectHandler.get_project_handler(ph_name)
         video = ph.get_video(
             standard_screen_size,
             standard_hop_length,
             standard_framerate
         )
-        video.make_frame_per_frame(11)
+        video.get_frame(11)
