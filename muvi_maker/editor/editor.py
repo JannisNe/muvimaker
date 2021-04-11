@@ -197,8 +197,8 @@ class Editor(tk.Frame):
             self.videofile = self.project_handler.make_video(framerate=fps, screen_size=screen_size)
         except PictureError as e:
             logger.error(e)
-
-        self._stop_progress_bar()
+        finally:
+            self._stop_progress_bar()
 
     def analyse(self):
         self._start_progress_bar()
@@ -208,7 +208,7 @@ class Editor(tk.Frame):
     def _analyse(self):
         logger.debug('analysing')
         screen_size = np.array(self.widgets['parameters_frame'].size, dtype=float)
-        f = 100 / screen_size[0]
+        f = 200 / screen_size[0]
         screen_size *= f
         fps = self.widgets['parameters_frame'].fps
 
@@ -219,11 +219,10 @@ class Editor(tk.Frame):
             logger.debug('passing results to analyzer frame')
             self.analyzer_frame_queue.put({'c_s_lrvf': (low_res_video_frames, fps)})
             self.widgets['analyzer_frame'].collect()
-
         except PictureError as e:
             logger.error(e)
-
-        self._stop_progress_bar()
+        finally:
+            self._stop_progress_bar()
 
     def check_scratch(self):
         scr = os.environ.get(mv_scratch_key, "None")
