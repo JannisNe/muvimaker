@@ -18,6 +18,7 @@ class MetaPicture(BasePicture, abc.ABC):
         self.meta_multiplicity = int(param_info.pop('meta_multiplicity', '5'))
         meta_center = param_info.pop('meta_center', '1, 1')
         self.meta_center = np.array([float(i) for i in meta_center.split(', ')]) * np.array(screen_size)
+        self.meta_phase = float(param_info.get("meta_phase", '0'))
 
         # given in frames or attribute of sound that determines the period
         meta_period = param_info.pop('meta_period', '100')
@@ -40,6 +41,11 @@ class MetaPicture(BasePicture, abc.ABC):
 
         self.centers = self.calculate_centers()
 
+        try:
+            self.angles = self.calculate_angles()
+        except NotImplementedError:
+            self.angles = None
+
         super().__init__(sound_dictionary, param_info, screen_size)
 
         self._picture = BasePicture.create(
@@ -49,14 +55,20 @@ class MetaPicture(BasePicture, abc.ABC):
             self.screen_size
         )
 
-    def make_frame_per_frame(self, ind):
+    def _make_frame_per_frame(self, ind):
 
         if isinstance(self._picture, BaseForm):
             surface = gizeh.Surface(int(self.screen_size[0] * 2), int(self.screen_size[1] * 2))
             self._picture.surface = surface
 
             for i in range(self.meta_multiplicity):
-                self._picture.center = self.centers[i][ind]
+
+                for attr in ['center', 'angle']:
+                    if hasattr(self._picture, attr):
+                        attr_list = self.__getattribute__(attr + 's')
+                        if not isinstance(attr_list, type(None)):
+                            self._picture.__setattr__(attr, attr_list[i][ind])
+
                 self._picture.draw(ind)
 
             return self._picture.surface.get_npimage(transparent=True)
@@ -68,7 +80,7 @@ class MetaPicture(BasePicture, abc.ABC):
 
             for i in range(self.meta_multiplicity - 1):
                 self._picture.center = self.centers[i+1][ind]
-                newpic = Image.fromarray(self._picture.make_frame_per_frame(ind)).convert('RGBA')
+                newpic = Image.fromarray(self._picture.get_frame(ind)).convert('RGBA')
                 if pic:
                     pic = pic.paste(newpic, (0, 0), pic)
                 else:
@@ -78,4 +90,7 @@ class MetaPicture(BasePicture, abc.ABC):
 
     @abc.abstractmethod
     def calculate_centers(self):
-        pass
+        raise NotImplementedError
+
+    def calculate_angles(self):
+        raise NotImplementedError
