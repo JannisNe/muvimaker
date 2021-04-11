@@ -36,6 +36,9 @@ class ProjectHandler:
         self.analyzer_results = None
         self.length = None
 
+        self._cached_sounds = dict()
+        self._cached_pictures = dict()
+
     @property
     def indir(self):
         return f'{self.home_directory}/input'
@@ -88,7 +91,7 @@ class ProjectHandler:
                 kw = {'indent': 4, 'sort_keys': True}
 
             try:
-                logger.debug(f"saving {attr}, to {ff}")
+                logger.debug(f"saving {attr} to {ff}")
                 with open(ff, mod) as f:
                     saver.dump(self.__getattribute__(attr), f, **kw)
             except OSError as e:
@@ -114,7 +117,7 @@ class ProjectHandler:
                 logger.warning(f"Could not load {attr} from {ff}: {e}")
 
     @staticmethod
-    def get_project_handler(name=None, directory=None, **kwargs):
+    def get_project_handler(name=None, directory=None):
         mv_scratch = os.environ[mv_scratch_key]
 
         if not name and directory:
@@ -154,7 +157,15 @@ class ProjectHandler:
         self.save_me()
 
     def get_sound(self, name, hop_length, framerate):
-        return Sound(self.sound_files[name], hop_length=hop_length, sample_rate=framerate * hop_length)
+        h = f'{name}{hop_length:.7f}{framerate:.7f}'
+        if h not in self._cached_sounds:
+            logger.debug(f'Sound {name} not in cache, creating it')
+            self._cached_sounds[h] = Sound(
+                self.sound_files[name],
+                hop_length=hop_length,
+                sample_rate=framerate * hop_length
+            )
+        return self._cached_sounds[h]
 
     def sound_dictionary(self, framerate, hoplength):
         d = {
@@ -174,8 +185,15 @@ class ProjectHandler:
             attr, value = t.split(': ')
             param_info[attr] = value
 
-        sound_dict = self.sound_dictionary(framerate, hoplength)
-        return BasePicture.create(picture_class, sound_dict, param_info, screen_size), int(ind)
+        h = f"{name}{screen_size}{framerate:.7f}{hoplength:.7f}{picture_class}{json.dumps(param_info)}"
+
+        if (name not in self._cached_pictures) or (self._cached_pictures[name][1] != h):
+            logger.debug(f'creating picture {name} with hash {h}')
+            sound_dict = self.sound_dictionary(framerate, hoplength)
+            pic = BasePicture.create(picture_class, sound_dict, param_info, screen_size)
+            self._cached_pictures[name] = (pic, h)
+
+        return self._cached_pictures[name][0], int(ind)
 
     def get_pictures_list(self, screen_size, framerate, hoplength):
         l = np.empty(len(self.pictures.keys()), dtype=object)
@@ -200,11 +218,30 @@ class ProjectHandler:
         video = Video(pictures, self.main_sound_file, framerate, duration, screen_size)
         return video
 
-    def analyse(self, screen_size=standard_screen_size, hop_length=standard_hop_length, framerate=standard_framerate):
+    def analyse(self, screen_size=standard_screen_size, hop_length=standard_hop_length, framerate=standard_framerate,
+                codec='.mp4'):
         video = self.get_video(screen_size, hop_length, framerate)
         low_res_video_frames = list()
         for i in tqdm(range(round(framerate * self.length)), desc='making low res frames'):
-            low_res_video_frames.append(video.make_frame_per_frame(i))
+            low_res_video_frames.append(video.get_frame(i))
+
+        pre_computed_picture = BasePicture.create(
+            'pre_computed_picture',
+            None,
+            {'frames': low_res_video_frames},
+            None
+        )
+
+        analyser_video = Video(
+            [pre_computed_picture],
+            self.main_sound_file,
+            framerate,
+            self.length,
+            screen_size
+        )
+
+        filename = f"{self.outdir}/{self.name}_analyser{codec}"
+        analyser_video.make_video(filename)
 
         self.analyzer_results = low_res_video_frames, framerate
         self.save_me()
@@ -226,8 +263,3 @@ class ProjectHandler:
         filename += '.' + codec
         video.make_video(filename=filename)
         return filename
-
-    @staticmethod
-    def multiprocess_wrapping(fn, res):
-        ph = ProjectHandler.get_project_handler(filename=fn)
-        res['video_filename'] = ph.make_video()
