@@ -38,30 +38,30 @@ for pic_class in BasePicture.subclasses.keys():
     j += 1
 
 ph_name = 'test_ph_handler'
+ph = ProjectHandler.get_project_handler(ph_name)
+ph.pictures = pictures
+ph._main_sound_file = example_song
+ph.sound_files = sounds
+ph.save_me()
 
 
 class TestProjectHandler(unittest.TestCase):
 
     def test_a_project_handler(self):
         logger.info('\n\n   testing project handler\n\n')
-        ph = ProjectHandler.get_project_handler(ph_name)
-        ph.sound_files = sounds
         classes = [l[0] for l in pictures.values()]
         logger.debug(f'testing classes {classes}')
-        ph.pictures = pictures
-        ph._main_sound_file = example_song
         video = ph.get_video(
             standard_screen_size,
             standard_hop_length,
             standard_framerate
         )
         video.make_frame_per_frame(10)
-        ph.save_me()
 
     def test_b_load_project_handler(self):
         logger.info('\n\n    testing a loaded project handler\n\n')
-        ph = ProjectHandler.get_project_handler(ph_name)
-        video = ph.get_video(
+        ph_loaded = ProjectHandler.get_project_handler(ph_name)
+        video = ph_loaded.get_video(
             standard_screen_size,
             standard_hop_length,
             standard_framerate
@@ -70,10 +70,8 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_c_test_analyse(self):
         logger.info('\n\n   test analyse function \n\n')
-        ph = ProjectHandler.get_project_handler(ph_name)
         ph.analyse((50, 50), standard_hop_length, 2)
 
     def test_d_test_make_video(self):
         logger.info('\n\n   testing making video \n\n')
-        ph = ProjectHandler.get_project_handler(ph_name)
         ph.make_video((50, 50), standard_hop_length, 2)
