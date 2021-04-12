@@ -211,8 +211,13 @@ class ProjectHandler:
 
     # ==========================================  Video  ========================================== #
 
-    def get_video(self, screen_size, hop_length, framerate):
+    def get_video(self, screen_size, hop_length, framerate, cache=True):
         pictures = self.get_pictures_list(screen_size, framerate, hop_length)
+
+        if not cache:
+            for p in pictures:
+                p.cache_bool = False
+
         duration = self.get_sound('main', hop_length, framerate).get_length()
         self.length = duration
         video = Video(pictures, self.main_sound_file, framerate, duration, screen_size)
@@ -223,7 +228,7 @@ class ProjectHandler:
         video = self.get_video(screen_size, hop_length, framerate)
         low_res_video_frames = list()
         for i in tqdm(range(round(framerate * self.length)), desc='making low res frames'):
-            low_res_video_frames.append(video.get_frame(i))
+            low_res_video_frames.append(video.make_frame_per_frame(i))
 
         pre_computed_picture = BasePicture.create(
             'pre_computed_picture',
@@ -251,7 +256,7 @@ class ProjectHandler:
     def make_video(self, hop_length=standard_hop_length, framerate=standard_framerate, codec='mp4',
                    screen_size=standard_screen_size):
 
-        video = self.get_video(screen_size, hop_length, framerate)
+        video = self.get_video(screen_size, hop_length, framerate, cache=False)
         filename = f"{self.outdir}/{self.name}"
 
         if hop_length != standard_hop_length:
