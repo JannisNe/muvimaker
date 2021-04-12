@@ -70,8 +70,8 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_c_test_analyse(self):
         logger.info('\n\n   test analyse function \n\n')
-        ph.analyse((50, 50), standard_hop_length, 15)
+        ph.analyse((200, 100), standard_hop_length, 20)
 
     def test_d_test_make_video(self):
         logger.info('\n\n   testing making video \n\n')
-        ph.make_video(screen_size=(50, 50), hop_length=standard_hop_length, framerate=15)
+        ph.make_video(screen_size=(100, 100), hop_length=standard_hop_length, framerate=20)
