@@ -1,4 +1,4 @@
-import os, shutil, pickle, json
+import os, shutil, pickle, json, math
 from tqdm import tqdm
 import numpy as np
 
@@ -227,7 +227,7 @@ class ProjectHandler:
                 codec='.mp4'):
         video = self.get_video(screen_size, hop_length, framerate)
         low_res_video_frames = list()
-        for i in tqdm(range(round(framerate * self.length)), desc='making low res frames'):
+        for i in tqdm(range(math.ceil(framerate * self.length)), desc='making low res frames'):
             low_res_video_frames.append(video.make_frame_per_frame(i))
 
         pre_computed_picture = BasePicture.create(
