@@ -21,7 +21,7 @@ class TestPreComputedPicture(unittest.TestCase):
             standard_hop_length,
             standard_framerate
         )
-        frames = [video.get_frame(10)]
+        frames = [video.make_frame_per_frame(10)]
 
         pre_computed_picture = BasePicture.create(
             'pre_computed_picture',
