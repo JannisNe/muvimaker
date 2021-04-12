@@ -16,11 +16,16 @@ class BasePicture(abc.ABC):
         self.screen_size = screen_size
 
         self._cached_frames = dict()
+        self.cache_bool = True
 
     def get_frame(self, ind):
-        if not ind in self._cached_frames:
-            self._cached_frames[ind] = self._make_frame_per_frame(ind)
-        return self._cached_frames[ind]
+        if self.cache_bool:
+            if ind not in self._cached_frames:
+                self._cached_frames[ind] = self._make_frame_per_frame(ind)
+            return self._cached_frames[ind]
+
+        else:
+            return self._make_frame_per_frame(ind)
 
     @abc.abstractmethod
     def _make_frame_per_frame(self, ind):
