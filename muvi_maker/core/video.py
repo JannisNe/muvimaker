@@ -1,14 +1,7 @@
 from PIL import Image
-import gizeh
 import numpy as np
-import math
+import math, os
 import moviepy.editor as mpy
-import os
-import matplotlib.cm as cm
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from moviepy.video.io.bindings import mplfig_to_npimage
-# import pyqtgraph as pg
 
 from muvi_maker import main_logger
 
@@ -52,4 +45,14 @@ class Video:
         logger.debug(f'setting {self.soundfile} as audio')
         audio = mpy.AudioFileClip(self.soundfile)
         clip_with_audio = clip.set_audio(audio)
-        clip_with_audio.write_videofile(filename, fps=self.framerate)
+        extension = filename.split('.')[-1]
+
+        codec = 'rawvideo' if extension == 'avi' else 'mpeg4' if extension == 'mp4' else None
+        if not codec:
+            raise VideoError(f'Codec for file extension .{extension} not known!')
+
+        clip_with_audio.write_videofile(filename, fps=self.framerate, codec=codec, audio_codec='aac')
+
+
+class VideoError(Exception):
+    pass
