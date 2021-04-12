@@ -74,4 +74,4 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_d_test_make_video(self):
         logger.info('\n\n   testing making video \n\n')
-        ph.make_video((50, 50), standard_hop_length, 15)
+        ph.make_video(screen_size=(50, 50), hop_length=standard_hop_length, framerate=15)
