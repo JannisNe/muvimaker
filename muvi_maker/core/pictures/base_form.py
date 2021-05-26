@@ -57,23 +57,47 @@ class BaseForm(BasePicture, abc.ABC):
         # ---------------------- Colour ------------------------ #
         colour_sound_name = param_info['colour']
         colour_cmap = param_info.get('cmap', 'plasma')
-        colour_smooth = int(param_info.get('colour_smooth', 1))
-
+        colour_mode = param_info.get('colour_mode', 'level')
         colour_sound = self.sound_dict[colour_sound_name]
-        colour_chroma = colour_sound.get_chroma()
         cmap = cm.get_cmap(colour_cmap)
 
-        max_inds = [np.argmax(c) / len(c) for c in colour_chroma]
+        # get the colour based on the volume level of the sound
+        if colour_mode == 'level':
+            colour_smooth = int(param_info.get('colour_smooth', 1))
+            colour_chroma = colour_sound.get_chroma()
+            max_inds = [np.argmax(c) / len(c) for c in colour_chroma]
 
-        if colour_smooth > 1:
-            cl = list()
-            for i in range(len(max_inds)):
-                h, b = np.histogram(max_inds[i:i + colour_smooth])
-                cl.append(b[np.argmax(h)])
-            color = [cmap(cli) for cli in cl]
+            if colour_smooth > 1:
+                cl = list()
+                for i in range(len(max_inds)):
+                    h, b = np.histogram(max_inds[i:i + colour_smooth])
+                    cl.append(b[np.argmax(h)])
+                color = [cmap(cli) for cli in cl]
+
+            else:
+                color = [cmap(imi) for imi in max_inds]
+
+        # get the colour based on a trigger recieved from the sound
+        # every time a trigger is recieved change the colour randomly
+        elif colour_mode == 'trigger':
+            trigger_source = param_info.get('colour_trigger_source', 'get_percussive_power')
+            threshold = float(param_info.get('colour_trigger_threshold', 0.5))
+            seed = int(param_info.get('colour_trigger_seed', 666))
+            rng = np.random.default_rng(seed=seed)
+
+            trigger_values = colour_sound.__getattribute__(trigger_source)()
+            normed_trigger = trigger_values / max(trigger_values)
+            trigger = normed_trigger >= threshold
+
+            ic = cmap(rng.uniform())
+            color = list()
+            for trigger_now in trigger:
+                if trigger_now:
+                    ic = cmap(rng.uniform())
+                color.append(ic)
 
         else:
-            color = [cmap(imi) for imi in max_inds]
+            raise ValueError(f"Value {colour_mode} for parameter 'colour_mode' not understood!")
 
         self.color = color
 
