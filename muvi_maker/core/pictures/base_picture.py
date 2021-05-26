@@ -20,6 +20,7 @@ class BasePicture(abc.ABC):
 
     def get_frame(self, ind):
         if self.cache_bool:
+            # store the frames as sparse matrices to save memory
             if ind not in self._cached_frames:
                 self._cached_frames[ind] = self._make_frame_per_frame(ind)
             return self._cached_frames[ind]
@@ -29,6 +30,11 @@ class BasePicture(abc.ABC):
 
     @abc.abstractmethod
     def _make_frame_per_frame(self, ind):
+        """
+        Return a numpy array that gives (R,G,B) values for every pixel
+        :param ind: indice of the frame
+        :return: np.array
+        """
         pass
 
     @classmethod
