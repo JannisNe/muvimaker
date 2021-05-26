@@ -20,24 +20,30 @@ class MetaPicture(BasePicture, abc.ABC):
         self.meta_center = np.array([float(i) for i in meta_center.split(', ')]) * np.array(screen_size)
         self.meta_phase = float(param_info.get("meta_phase", '0'))
 
+        # meta period attributes determine how fast the meta shape spins
+        # or how fast the pictures move on the meta shape
         # given in frames or attribute of sound that determines the period
-        meta_period = param_info.pop('meta_period', '100')
+        period_defaults = {'meta_period': '100', 'meta_period_on_shape': '100'}
+        for attr in period_defaults.keys():
 
-        if isinstance(meta_period, str):
+            meta_period = param_info.pop(attr, period_defaults[attr])
 
-            if meta_period in sound_dictionary:
-                # period will be determined by a Sound instance
-                power = sound_dictionary[meta_period].get_power()
-                meta_min_period = param_info.pop('meta_min_period')
-                p = np.minimum(power / max(power), meta_min_period)
-                self.meta_period = p
+            if isinstance(meta_period, str):
+
+                if meta_period in sound_dictionary:
+                    # period will be determined by a Sound instance
+                    power = sound_dictionary[meta_period].get_power()
+                    meta_min_period = param_info.pop(f'min_{attr}')
+                    p = np.minimum(power / max(power), meta_min_period)
+                    self.__setattr__(attr, p)
+
+                else:
+                    length = len(list(sound_dictionary.values())[0].get_power())
+                    self.__setattr__(attr, np.array([float(meta_period)] * length))
 
             else:
-                length = len(list(sound_dictionary.values())[0].get_power())
-                self.meta_period = np.array([float(meta_period)] * length)
-
-        else:
-            self.meta_period = meta_period
+                assert len(meta_period)  # this ensures that meta_period is list like
+                self.__setattr__(attr, meta_period)
 
         self.centers = self.calculate_centers()
 
