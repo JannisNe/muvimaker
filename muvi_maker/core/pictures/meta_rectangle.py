@@ -14,8 +14,8 @@ class MetaRectangle(MetaPicture):
 
     def __init__(self, sound_dictionary, param_info, screen_size):
         self._cached_postitions_on_rectangle = None
-        self.meta_length = float(param_info.pop('meta_length', '1')) * screen_size[0]
-        self.meta_height = float(param_info.pop('meta_height', '1')) * screen_size[1]
+        self.meta_length = float(param_info.pop('meta_length', '2')) * screen_size[0]
+        self.meta_height = float(param_info.pop('meta_height', '2')) * screen_size[1]
         self.N_sides = 4
 
         self._regular_angle = 2*np.pi / self.N_sides
@@ -26,13 +26,13 @@ class MetaRectangle(MetaPicture):
 
     @property
     def side_lengths(self):
-        return np.array([self.meta_height, self.meta_length, self.meta_height, self.meta_length])
+        return np.array([self.meta_length, self.meta_height, self.meta_length, self.meta_height])
 
     def direction(self, N_side):
         N_side = np.array(N_side)
         angle = np.array([
-            np.sin(self._regular_angle * N_side),
-            np.cos(self._regular_angle * N_side)
+            np.cos(self._regular_angle * N_side),
+            np.sin(self._regular_angle * N_side)
         ])
         axes = list(range(1, len(N_side.shape) + 1)) + [0]
         angle = np.transpose(angle, axes=axes)
@@ -40,15 +40,15 @@ class MetaRectangle(MetaPicture):
 
     def calculate_centers(self):
 
-        # calculate the initial corner position
-        corner = self.meta_center - np.array([self.meta_length, self.meta_height])
-        starting_corner_positions = []
-        for i in range(self.N_sides):
+        # calculate the initial corner positions
+        corner = self.meta_center - np.array([self.meta_length, self.meta_height]) / 2
+        starting_corner_positions = [corner]
+        for i in range(self.N_sides - 1):
             toadd = self.side_lengths[i] * self.direction(i)
             corner = corner + toadd
             starting_corner_positions.append(corner)
 
-        logger.debug(f'initial corner positions are {starting_corner_positions}')
+        logger.debug(f'initial corner positions are {starting_corner_positions}, center is {self.meta_center}')
 
         # calculate the rectlen
         start_rectlens = [1 / self.meta_multiplicity * i for i in range(self.meta_multiplicity)]
@@ -63,7 +63,7 @@ class MetaRectangle(MetaPicture):
 
         # calculate the position from the rectlen
         N_side = np.floor(rectlens * self.N_sides).astype(int)
-        perc_of_side = N_side - np.floor(N_side)
+        perc_of_side = rectlens * self.N_sides - np.floor(N_side)
         logger.debug(f'first entries of perc_of_side: {perc_of_side[:,0]}')
 
         for o in [
