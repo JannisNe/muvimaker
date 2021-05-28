@@ -23,13 +23,13 @@ class MetaPicture(BasePicture, abc.ABC):
         # meta period attributes determine how fast the meta shape spins
         # or how fast the pictures move on the meta shape
         # given in frames or attribute of sound that determines the period
+        self.meta_period = self.meta_period_on_shape = None
         period_defaults = {'meta_period': '100', 'meta_period_on_shape': '100'}
-        for attr in period_defaults.keys():
 
+        for attr in period_defaults.keys():
             meta_period = param_info.pop(attr, period_defaults[attr])
 
             if isinstance(meta_period, str):
-
                 if meta_period in sound_dictionary:
                     # period will be determined by a Sound instance
                     power = sound_dictionary[meta_period].get_power()
