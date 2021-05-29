@@ -1,6 +1,7 @@
 import abc
 
 import numpy as np
+import math
 
 from muvi_maker import main_logger
 from .meta_picture import MetaPicture
@@ -12,7 +13,7 @@ logger = main_logger.getChild(__name__)
 class MetaPolygon(MetaPicture, abc.ABC):
 
     def __init__(self, sound_dictionary, param_info, screen_size):
-        self.N_sides = param_info['N_sides']
+        self.N_sides = int(param_info['meta_N_sides'])
         self._regular_angle = 2 * np.pi / self.N_sides
         super().__init__(sound_dictionary, param_info, screen_size)
 
@@ -55,15 +56,6 @@ class MetaPolygon(MetaPicture, abc.ABC):
         N_side = np.floor(rectlens * self.N_sides).astype(int)
         perc_of_side = rectlens * self.N_sides - np.floor(N_side)
         logger.debug(f'first entries of perc_of_side: {perc_of_side[:,0]}')
-
-        # for o in [
-        #     np.array(starting_corner_positions)[N_side],
-        #     N_side,
-        #     perc_of_side,
-        #     self.side_lengths[N_side],
-        #     self.direction(N_side)
-        # ]:
-        #     logger.debug(f'shape is {np.shape(o)}')
 
         side_evol = perc_of_side * self.side_lengths[N_side]
         position = np.array(self.initial_corner_positions)[N_side] + side_evol[:,:,None] * self.direction(N_side)
