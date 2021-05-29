@@ -6,18 +6,19 @@ import matplotlib.cm as cm
 import collections
 
 from muvi_maker import main_logger
-from .base_picture import BasePicture, PictureError
+from .base_picture import PictureError
+from .simple_picture import SimplePicture
 
 logger = main_logger.getChild(__name__)
 
 
-class BaseForm(BasePicture, abc.ABC):
+class BaseForm(SimplePicture, abc.ABC):
 
     def __init__(self, sound_dict, param_info, screen_size):
         super().__init__(sound_dict, param_info, screen_size)
 
         self.surface = None
-        self.kwargs= dict()
+        self.kwargs = dict()
 
         # --------------------- Position ----------------------- #
         rel_center = param_info.get('center', '1, 1')
