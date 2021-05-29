@@ -13,7 +13,7 @@ class MetaRegularPolygon(MetaPolygon):
 
     def __init__(self, sound_dictionary, param_info, screen_size):
         self.meta_length = float(param_info.pop('meta_length', '2')) * min(screen_size)
-        self.N_sides = int(param_info.pop('N_side', '4'))
+        self.N_sides = int(param_info.pop('meta_N_sides', '4'))
         super().__init__(sound_dictionary, param_info, screen_size)
 
     @property
