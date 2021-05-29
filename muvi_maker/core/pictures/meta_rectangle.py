@@ -1,8 +1,6 @@
-import math
 import numpy as np
 
 from muvi_maker import main_logger
-# from .meta_picture import MetaPicture
 from .meta_polygon import MetaPolygon
 from .base_picture import BasePicture
 
@@ -16,9 +14,7 @@ class MetaRectangle(MetaPolygon):
     def __init__(self, sound_dictionary, param_info, screen_size):
         self.meta_length = float(param_info.pop('meta_length', '2')) * screen_size[0]
         self.meta_height = float(param_info.pop('meta_height', '2')) * screen_size[1]
-        self.N_sides = 4
-
-        self._regular_angle = 2*np.pi / self.N_sides
+        param_info['meta_N_sides'] = 4
 
         super().__init__(sound_dictionary, param_info, screen_size)
 
