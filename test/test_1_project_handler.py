@@ -1,8 +1,8 @@
-import unittest, os
+import unittest
 
-from muvi_maker import main_logger, mv_scratch_key
+from muvi_maker import main_logger
 from muvi_maker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
-from muvi_maker.example_data import example_song
+from muvi_maker.example_data import example_song, example_pic
 from muvi_maker.core.pictures.base_picture import BasePicture
 
 
@@ -34,6 +34,9 @@ for pic_class in BasePicture.subclasses.keys():
 
     if 'meta' in pic_class:
         pictures[n][1].append('pictures_class: star')
+
+    if 'picture_from_file' in pic_class:
+        pictures[n][1].append(f'filename: {example_pic}')
 
     j += 1
 
