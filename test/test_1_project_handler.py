@@ -37,6 +37,7 @@ for pic_class in BasePicture.subclasses.keys():
 
     if 'picture_from_file' in pic_class:
         pictures[n][1].append(f'filename: {example_pic}')
+        pictures[n][1].append('scale: 0.01')
 
     j += 1
 
