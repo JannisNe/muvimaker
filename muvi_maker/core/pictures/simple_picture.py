@@ -10,6 +10,7 @@ class SimplePicture(BasePicture, abc.ABC):
     def __init__(self, sound_dictionary, param_info, screen_size):
 
         super().__init__(sound_dictionary, param_info, screen_size)
+        self.angle = float(param_info.pop('angle', '0'))
 
         # --------------------- Position ----------------------- #
         rel_center = param_info.get('center', '1, 1')

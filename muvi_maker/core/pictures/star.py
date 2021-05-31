@@ -13,7 +13,7 @@ class Star(BaseForm):
 
     def __init__(self, sound_dict, param_info, screen_size):
         self.nbranches = int(param_info.pop('nbranches', '10'))
-        self.angle = float(param_info.pop('angle', '0'))
+        # self.angle = float(param_info.pop('angle', '0'))
         self.period = float(param_info.pop('period', 'inf'))
         super().__init__(sound_dict, param_info, screen_size)
 
