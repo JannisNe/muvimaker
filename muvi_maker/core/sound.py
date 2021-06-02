@@ -1,8 +1,6 @@
-import logging
-import librosa
+import librosa, copy
 import numpy as np
-import math
-from muvi_maker import main_logger#, outdir, indir
+from muvi_maker import main_logger
 
 
 logger = main_logger.getChild(__name__)
@@ -53,25 +51,25 @@ class Sound:
         if type(self.length) is type(None):
             self.load_file()
         logger.debug(f'length is {self.length}')
-        return self.length
+        return copy.copy(self.length)
 
     def get_frange(self):
         self.get_harmonic()
         if isinstance(self.frange, type(None)):
             self.frange = 2 ** (np.linspace(0, len(self.C_harmonic[0]) - 1, len(self.C_harmonic[0])) / 12) * self.fmin
-        return self.frange
+        return copy.copy(self.frange)
 
     def get_power(self):
         self.get_time_series()
         if type(self.power) is type(None):
             logger.debug('calculating power')
             self.power = librosa.feature.rms(self.time_series)[0]
-        return self.power
+        return copy.copy(self.power)
         
     def get_time_series(self):
         if type(self.time_series) is type(None):
             self.load_file()
-        return self.time_series
+        return copy.copy(self.time_series)
         
     def get_percussive(self, return_t=False):
         self.get_time_series()
@@ -85,15 +83,15 @@ class Sound:
                 fmin=self.fmin
             ).T
         if return_t:
-            return self.C_percussive, self.percussive
+            return copy.copy(self.C_percussive), copy.copy(self.percussive)
         else:
-            return self.C_percussive
+            return copy.copy(self.C_percussive)
         
     def get_percussive_power(self):
         self.get_percussive()
         if type(self.percussive_power) is type(None):
             self.percussive_power = librosa.feature.rms(self.percussive)[0]
-        return self.percussive_power
+        return copy.copy(self.percussive_power)
 
     def get_harmonic(self, return_t=False):
         self.get_time_series()
@@ -107,15 +105,15 @@ class Sound:
                 fmin=self.fmin
             ).T
         if return_t:
-            return self.C_harmonic, self.harmonic
+            return copy.copy(self.C_harmonic), copy.copy(self.harmonic)
         else:
-            return self.C_harmonic
+            return copy.copy(self.C_harmonic)
         
     def get_harmonic_power(self):
         self.get_harmonic()
         if type(self.harmonic_power) is type(None):
             self.harmonic_power = librosa.feature.rms(self.harmonic)[0]
-        return self.harmonic_power
+        return copy.copy(self.harmonic_power)
     
     def get_chroma(self):
         self.get_harmonic()
@@ -127,19 +125,19 @@ class Sound:
                 C=self.C_harmonic.T,
                 fmin=self.fmin
             ).T
-        return self.chroma
+        return copy.copy(self.chroma)
     
     def get_tone_relation(self):
         tones = self.get_chroma()
         logger.debug(f'shape of tones is {np.shape(tones)}')
         tone_relation = np.array([t / max(t) for t in tones])
-        return tone_relation
+        return copy.copy(tone_relation)
     
     def get_squared_tone_relation(self):
         logger.debug(f'getting squared tone relation')
         tone_relation = self.get_tone_relation()
         squared_tone_relation = np.array([t**2 / sum(t**2) for t in tone_relation])
-        return squared_tone_relation
+        return copy.copy(squared_tone_relation)
         
     
     
