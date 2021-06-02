@@ -80,19 +80,17 @@ class MetaPicture(BasePicture, abc.ABC):
             return self._picture.surface.get_npimage(transparent=True)
 
         else:
-
-            self._picture.center = self.centers[0]
             pic = None
 
-            for i in range(self.meta_multiplicity - 1):
-                self._picture.center = self.centers[i+1][ind]
-                newpic = Image.fromarray(self._picture.get_frame(ind)).convert('RGBA')
+            for i in range(self.meta_multiplicity):
+                self._picture.center = self.centers[i][ind]
+                newpic = Image.fromarray(self._picture._make_frame_per_frame(ind)).convert('RGBA')
                 if pic:
-                    pic = pic.paste(newpic, (0, 0), pic)
+                    pic.paste(newpic, (0, 0), newpic)
                 else:
                     pic = newpic
 
-            return np.array(pic.convert('RGB'))
+            return np.array(pic.convert('RGBA'))
 
     @abc.abstractmethod
     def calculate_centers(self):
