@@ -25,7 +25,10 @@ class PictureFromFile(SimplePicture):
         angle = self.angle
         radius = self.radius[ind]
 
-        new_size = np.array(self._image.size) * radius
+        old_max_size = max(self._image.size)
+        radius_factor = radius / old_max_size
+        new_size = np.array(self._image.size) * radius_factor
+
         # only paste the image into the empty frame if the size is bigger than 0 pixels in both dimensions
         if np.all(new_size.astype(int) >= 0.1):
             image = self._image.resize(new_size.astype(int), PIL.Image.NEAREST)
@@ -34,4 +37,6 @@ class PictureFromFile(SimplePicture):
             image_upper_left_corner = np.array(center) + image_center * np.array([-1, -1])
             frame.paste(image, box=tuple(image_upper_left_corner.astype(int)))
 
-        return np.array(frame)
+        frame = self.postprocess(frame, ind)
+
+        return np.array(frame.convert('RGBA'))
