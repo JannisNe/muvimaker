@@ -18,12 +18,15 @@ class StarWithBounce(Star, BaseBounce):
         for i in range(self.multiplicity):
             j = i + 1
             if ind > j:
-                form = gizeh.star(
-                    radius=self.radius[ind - j] * (self.radius_add + j) * self.radius_factor,
-                    xy=self.center,
-                    fill=None,
-                    stroke=self.color[ind - j],
-                    stroke_width=self.stroke_width(j),
-                    **self.kwargs
-                )
-                form.draw(self.surface)
+                radius = self.radius[ind - j]
+
+                if radius >= self.bounce_sensitive_radius * max(self.radius):
+                    form = gizeh.star(
+                        radius=radius * (self.radius_add + j) * self.radius_factor,
+                        xy=self.center,
+                        fill=None,
+                        stroke=self.color[ind - j],
+                        stroke_width=self.stroke_width(j),
+                        **self.kwargs
+                    )
+                    form.draw(self.surface)
