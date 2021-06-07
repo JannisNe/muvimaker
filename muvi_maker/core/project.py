@@ -224,7 +224,7 @@ class ProjectHandler:
         return video
 
     def analyse(self, screen_size=standard_screen_size, hop_length=standard_hop_length, framerate=standard_framerate,
-                codec='mp4'):
+                codec='mpeg4'):
         video = self.get_video(screen_size, hop_length, framerate)
         low_res_video_frames = list()
         for i in tqdm(range(math.ceil(framerate * self.length)), desc='making low res frames'):
@@ -245,15 +245,14 @@ class ProjectHandler:
             screen_size
         )
 
-        filename = f"{self.outdir}/{self.name}_analyser.{codec}"
-        analyser_video.make_video(filename)
-
+        filename = f"{self.outdir}/{self.name}_analyser"
+        analyser_video.make_video(filename, codec)
         self.analyzer_results = low_res_video_frames, framerate
         self.save_me()
 
         return low_res_video_frames, framerate
 
-    def make_video(self, hop_length=standard_hop_length, framerate=standard_framerate, codec='mp4',
+    def make_video(self, hop_length=standard_hop_length, framerate=standard_framerate, codec='mpeg4',
                    screen_size=standard_screen_size):
 
         video = self.get_video(screen_size, hop_length, framerate, cache=False)
@@ -265,6 +264,5 @@ class ProjectHandler:
         if framerate != standard_framerate:
             filename += f'_framerate{framerate}'
             
-        filename += '.' + codec
-        video.make_video(filename=filename)
+        video.make_video(filename=filename, codec=codec)
         return filename

@@ -12,6 +12,17 @@ logger = main_logger.getChild(__name__)
 
 class Video:
 
+    codec_extension_map = np.array([
+        ('rawvideo', 'avi'),
+        ('png', 'avi'),
+        ('mp4', 'mpeg4')
+    ],
+        dtype={
+            'names': ['codec', 'extension'],
+            'format': ['<u30', '<u30']
+        }
+    )
+
     def __init__(self, pictures, soundfile, framerate, duration, screen_size):
         self.pictures = pictures
         self.soundfile = soundfile
@@ -39,17 +50,22 @@ class Video:
         ind = self._ind(t)
         return self.make_frame_per_frame(ind)
 
-    def make_video(self, filename):
+    def make_video(self, filename, codec):
         clip = mpy.VideoClip(self.make_frame_per_time, duration=self.duration)
         logger.debug(f'clip size is {clip.size}')
         logger.debug(f'setting {self.soundfile} as audio')
         audio = mpy.AudioFileClip(self.soundfile)
         clip_with_audio = clip.set_audio(audio)
-        extension = filename.split('.')[-1]
 
-        codec = 'rawvideo' if extension == 'avi' else 'mpeg4' if extension == 'mp4' else None
-        if not codec:
-            raise VideoError(f'Codec for file extension .{extension} not known!')
+        logger.debug('guess codec from extension')
+        codec_mask = Video.codec_extension_map['codec'] == codec
+        if not np.any(codec_mask):
+            raise VideoError(f'No file extension found for codec {codec}')
+        extension = Video.codec_extension_map['extension'][codec_mask]
+        filename += f'.{extension}'
+
+        logger.debug(f'codec is {codec}')
+        logger.debug(f'filename is {filename}')
 
         clip_with_audio.write_videofile(filename, fps=self.framerate, codec=codec, audio_codec='aac')
 
