@@ -17,6 +17,7 @@ class BaseBounce(BasePicture, abc.ABC):
         self.max_stroke_width = float(param_info.pop('max_stroke_width', 8))
         self.min_stroke_width = float(param_info.pop('min_stroke_width', 1))
         self.stroke_width_decline_order = float(param_info.pop('stroke_width_decline_order', 2))
+        self.bounce_sensitive_radius = float(param_info.pop('bounce_radius_sensitive_radius', 0.))
 
         self._b = (self.min_stroke_width - self.max_stroke_width * self.multiplicity ** self.stroke_width_decline_order) / \
                   (1 - self.multiplicity ** self.stroke_width_decline_order)
