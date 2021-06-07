@@ -15,11 +15,11 @@ class Video:
     codec_extension_map = np.array([
         ('rawvideo', 'avi'),
         ('png', 'avi'),
-        ('mp4', 'mpeg4')
+        ('mpeg4', 'mp4')
     ],
         dtype={
             'names': ['codec', 'extension'],
-            'format': ['<u30', '<u30']
+            'formats': ['U30', 'U30']
         }
     )
 
@@ -59,10 +59,12 @@ class Video:
 
         logger.debug('guess codec from extension')
         codec_mask = Video.codec_extension_map['codec'] == codec
-        if not np.any(codec_mask):
-            raise VideoError(f'No file extension found for codec {codec}')
         extension = Video.codec_extension_map['extension'][codec_mask]
-        filename += f'.{extension}'
+        if len(extension) != 1:
+            raise VideoError(f'{len(extension)} file extensions found for codec {codec}: '
+                             f'{extension}')
+
+        filename += f'.{extension[0]}'
 
         logger.debug(f'codec is {codec}')
         logger.debug(f'filename is {filename}')
