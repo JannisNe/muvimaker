@@ -123,7 +123,7 @@ class ProjectHandler:
         if not name and directory:
             name = directory.split(os.sep)[-1]
         elif name and not directory:
-            directory = os.path.join(mv_scratch, name)
+            directory = os.path.expanduser(os.path.join(mv_scratch, name))
 
         logger.debug(f'loading project handler {name} from {directory}')
         ph = ProjectHandler(name, directory)
