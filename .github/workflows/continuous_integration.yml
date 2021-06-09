@@ -39,6 +39,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+     # setting up requied software
+      - name: Install non-python software
+        run: |
+          sudo apt-get update
+          sudo apt-get install ffmpeg
+          sudo apt-get install frei0r-plugins
+          
      # Setting up dependencies
       - name: Install dependencies
         run: |
