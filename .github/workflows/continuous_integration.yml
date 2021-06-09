@@ -45,7 +45,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install ffmpeg
           sudo apt-get install frei0r-plugins
-          
+
      # Setting up dependencies
       - name: Install dependencies
         run: |
@@ -54,6 +54,8 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Test the code
+        env:
+          MUVI_SCRATCH: ~/
         run: |
           coverage run --concurrency=multiprocessing -m unittest discover test/
           coverage combine
