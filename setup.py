@@ -25,7 +25,7 @@ if __name__ == '__main__':
             "Operating System :: OS Independent",
             "Programming Language :: Python :: 3.9",
         ],
-        python_requires='>=3.7',
+        python_requires='>=3.9',
         install_requires=[
             "moviepy==1.0.3",
             "librosa==0.8.0",
