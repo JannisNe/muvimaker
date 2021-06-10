@@ -1,5 +1,7 @@
 [![CI](https://github.com/JannisNe/muvi_maker/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/JannisNe/muvi_maker/actions/workflows/continuous_integration.yml)
 [![Coverage Status](https://coveralls.io/repos/github/JannisNe/muvi_maker/badge.svg?branch=master)](https://coveralls.io/github/JannisNe/muvi_maker?branch=master)
+[![PyPI version](https://badge.fury.io/py/muvimaker.svg)](https://badge.fury.io/py/muvimaker)
+
 # `MuviMaker`
 MuviMaker is a package that generates moving images from a sound file.
 It uses 
