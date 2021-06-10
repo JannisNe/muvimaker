@@ -30,7 +30,7 @@ if __name__ == '__main__':
             "moviepy==1.0.3",
             "librosa==0.8.1",
             "numpy==1.20.3",
-            "matplotlib==3.3.3",
+            "matplotlib==3.4.2",
             "jupyterlab==3.0.16",
             "pillow==8.2.0",
             "gizeh==0.1.11",
