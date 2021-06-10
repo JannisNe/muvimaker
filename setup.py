@@ -15,7 +15,10 @@ if __name__ == '__main__':
         long_description_content_type="text/markdown",
         license="MIT",
         keywords="music video picture generation",
-        url="https://github.com/JannisNe/muvi_maker",
+        url="https://github.com/JannisNe/muvimaker",
+        project_urls={
+            "Bug Tracker": "https://github.com/JannisNe/muvimaker/issues",
+        },
         packages=setuptools.find_packages(),
         classifiers=[
             "License :: OSI Approved :: MIT License",
