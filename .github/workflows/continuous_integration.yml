@@ -99,6 +99,9 @@ jobs:
 
       - name: Test install from TestPyPi
         run: |
+          sudo apt-get update
+          sudo apt-get install ffmpeg
+          sudo apt-get install frei0r-plugins
           python -m pip install --no-deps --index-url https://test.pypi.org/simple/ muvimaker
           pip install -r requirements.txt
           python -c 'import muvimaker'
