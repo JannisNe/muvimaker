@@ -7,4 +7,4 @@ pillow==8.2.0
 gizeh==0.1.11
 ffmpeg==1.4
 coveralls
-setuptools==49.6.0
+setuptools==57.0.0
