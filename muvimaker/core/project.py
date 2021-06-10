@@ -2,10 +2,10 @@ import os, shutil, pickle, json, math
 from tqdm import tqdm
 import numpy as np
 
-from muvi_maker import main_logger, mv_scratch_key
-from muvi_maker.core.sound import Sound, SoundError
-from muvi_maker.core.pictures import BasePicture, PictureError
-from muvi_maker.core.video import Video
+from muvimaker import main_logger, mv_scratch_key
+from muvimaker.core.sound import Sound, SoundError
+from muvimaker.core.pictures import BasePicture, PictureError
+from muvimaker.core.video import Video
 
 
 logger = main_logger.getChild(__name__)

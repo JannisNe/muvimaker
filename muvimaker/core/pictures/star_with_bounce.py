@@ -1,6 +1,6 @@
 import gizeh
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .base_bounce import BaseBounce
 from .star import Star
 from .base_picture import BasePicture

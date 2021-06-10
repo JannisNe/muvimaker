@@ -1,8 +1,8 @@
 import tkinter as tk
 import os
-from muvi_maker.editor.dialogues.base_dialogue import BaseDialogue
-from muvi_maker import main_logger, mv_scratch_key, get_editor
-from muvi_maker.core.project import ProjectHandler
+from muvimaker.editor.dialogues.base_dialogue import BaseDialogue
+from muvimaker import main_logger, mv_scratch_key, get_editor
+from muvimaker.core.project import ProjectHandler
 
 
 logger = main_logger.getChild(__name__)

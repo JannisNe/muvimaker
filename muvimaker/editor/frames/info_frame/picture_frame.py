@@ -1,8 +1,8 @@
 import tkinter as tk
 import numpy as np
 
-from muvi_maker import main_logger, get_editor
-from muvi_maker.editor.dialogues import AddPictureDialogue
+from muvimaker import main_logger, get_editor
+from muvimaker.editor.dialogues import AddPictureDialogue
 
 
 logger = main_logger.getChild(__name__)

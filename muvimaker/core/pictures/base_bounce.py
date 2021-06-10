@@ -1,6 +1,6 @@
 import gizeh, abc
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .base_picture import BasePicture
 
 

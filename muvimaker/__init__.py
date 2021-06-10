@@ -57,7 +57,7 @@ def get_editor(self):
 # ==          initialise              == #
 # ====================================== #
 
-from muvi_maker.core.project import ProjectHandler
-from muvi_maker.core.video import Video
-from muvi_maker.core.sound import Sound
-from muvi_maker.core.pictures import *
+from muvimaker.core.project import ProjectHandler
+from muvimaker.core.video import Video
+from muvimaker.core.sound import Sound
+from muvimaker.core.pictures import *

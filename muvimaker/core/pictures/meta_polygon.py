@@ -3,7 +3,7 @@ import abc
 import numpy as np
 import math
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .meta_picture import MetaPicture
 
 

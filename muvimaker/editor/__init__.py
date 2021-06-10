@@ -1,1 +1,1 @@
-from muvi_maker.editor.editor import Editor
+from muvimaker.editor.editor import Editor

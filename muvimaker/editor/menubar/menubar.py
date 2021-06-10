@@ -1,8 +1,8 @@
 import tkinter as tk
-from muvi_maker import main_logger
+from muvimaker import main_logger
 
-from muvi_maker.editor.menubar.filemenu import Filemenu
-# from muvi_maker.editor.menubar.soundmenu import Soundmenu
+from muvimaker.editor.menubar.filemenu import Filemenu
+# from muvimaker.editor.menubar.soundmenu import Soundmenu
 
 
 logger = main_logger.getChild(__name__)

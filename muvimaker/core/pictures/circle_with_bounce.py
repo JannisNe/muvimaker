@@ -1,6 +1,6 @@
 import gizeh
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .base_bounce import BaseBounce
 from .circle import Circle
 from .base_picture import BasePicture

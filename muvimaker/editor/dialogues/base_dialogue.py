@@ -1,4 +1,4 @@
-from muvi_maker import main_logger
+from muvimaker import main_logger
 import tkinter as tk
 from tkinter import filedialog as fd
 

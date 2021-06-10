@@ -3,7 +3,7 @@ import numpy as np
 import math, os
 import moviepy.editor as mpy
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 
 
 default_picture = f'{os.path.dirname(os.path.realpath(__file__))}/default/default.jpg'

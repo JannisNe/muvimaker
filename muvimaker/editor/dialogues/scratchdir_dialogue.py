@@ -1,5 +1,5 @@
-from muvi_maker import main_logger, mv_scratch_key, set_scratch_dir
-from muvi_maker.editor.dialogues.base_dialogue import OpenDirectoryDialoge
+from muvimaker import main_logger, mv_scratch_key, set_scratch_dir
+from muvimaker.editor.dialogues.base_dialogue import OpenDirectoryDialoge
 from tkinter import filedialog as fd
 import os
 

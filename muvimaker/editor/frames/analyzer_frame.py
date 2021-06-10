@@ -3,8 +3,8 @@ import numpy as np
 from PIL import Image, ImageTk
 import time
 import threading
-from muvi_maker import main_logger
-from muvi_maker.images import baby_file
+from muvimaker import main_logger
+from muvimaker.images import baby_file
 
 
 logger = main_logger.getChild(__name__)

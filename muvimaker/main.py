@@ -1,8 +1,8 @@
 import tkinter as tk
 import argparse
 
-from muvi_maker.editor import Editor
-from muvi_maker import main_logger
+from muvimaker.editor import Editor
+from muvimaker import main_logger
 
 
 logger = main_logger.getChild(__name__)

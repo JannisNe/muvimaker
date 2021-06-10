@@ -1,6 +1,6 @@
 import tkinter as tk
-from muvi_maker import main_logger, get_editor
-from muvi_maker.editor.dialogues import OpenProjectDialogue, NewFileDialogue
+from muvimaker import main_logger, get_editor
+from muvimaker.editor.dialogues import OpenProjectDialogue, NewFileDialogue
 
 logger = main_logger.getChild(__name__)
 

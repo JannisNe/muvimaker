@@ -2,7 +2,7 @@ import numpy as np
 import abc, gizeh, math
 from PIL import Image
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .base_picture import BasePicture, PictureError
 from .base_form import BaseForm
 

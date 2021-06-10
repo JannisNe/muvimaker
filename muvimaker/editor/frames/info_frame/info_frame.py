@@ -1,5 +1,5 @@
 import tkinter as tk
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .sound_files_frame import SoundFilesFrame
 from .picture_frame import PicturesFrame
 

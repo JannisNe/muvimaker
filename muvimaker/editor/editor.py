@@ -9,11 +9,11 @@ import threading
 import queue
 from multiprocessing import Process, Manager
 
-from muvi_maker import main_logger, mv_scratch_key, main_queue
-from muvi_maker.editor.dialogues import ScratchDirDialogue
-from muvi_maker.editor.menubar import Menubar
-from muvi_maker.editor.frames import InfoFrame, LoggingFrame, ParametersFrame, AnalyzerFrame
-from muvi_maker.core.pictures import PictureError
+from muvimaker import main_logger, mv_scratch_key, main_queue
+from muvimaker.editor.dialogues import ScratchDirDialogue
+from muvimaker.editor.menubar import Menubar
+from muvimaker.editor.frames import InfoFrame, LoggingFrame, ParametersFrame, AnalyzerFrame
+from muvimaker.core.pictures import PictureError
 
 
 logger = main_logger.getChild(__name__)

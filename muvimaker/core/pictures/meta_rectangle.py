@@ -1,6 +1,6 @@
 import numpy as np
 
-from muvi_maker import main_logger
+from muvimaker import main_logger
 from .meta_polygon import MetaPolygon
 from .base_picture import BasePicture
 

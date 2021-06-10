@@ -1,5 +1,5 @@
 import tkinter as tk
-from muvi_maker import main_logger, mv_scratch_key
+from muvimaker import main_logger, mv_scratch_key
 
 logger = main_logger.getChild(__name__)
 

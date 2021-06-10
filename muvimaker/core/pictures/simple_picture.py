@@ -1,8 +1,8 @@
 import abc, collections, PIL
 import numpy as np
 
-from muvi_maker import main_logger
-from muvi_maker.core.pictures.base_picture import BasePicture, PictureError
+from muvimaker import main_logger
+from muvimaker.core.pictures.base_picture import BasePicture, PictureError
 
 
 logger = main_logger.getChild(__name__)

@@ -2,8 +2,8 @@ import os
 import tkinter as tk
 from tkinter import filedialog as fd
 
-from muvi_maker import main_logger
-from muvi_maker.core.pictures.base_picture import BasePicture
+from muvimaker import main_logger
+from muvimaker.core.pictures.base_picture import BasePicture
 
 
 logger = main_logger.getChild(__name__)

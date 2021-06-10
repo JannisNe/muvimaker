@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import scrolledtext as st
 import logging
 import queue
-from muvi_maker import main_logger, main_queue, logger_format
+from muvimaker import main_logger, main_queue, logger_format
 
 
 logger = main_logger.getChild(__name__)
