@@ -38,7 +38,8 @@ jobs:
 
       - name: Test install from TestPyPi
         run: |
-          python -m pip install --index-url https://test.pypi.org/simple/ muvimaker
+          python -m pip install --no-deps --index-url https://test.pypi.org/simple/ muvimaker
+          pip install -r requirements.txt
           python -c 'import muvimaker'
 
       - name: Publish distribution 📦 on PyPI
