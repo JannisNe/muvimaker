@@ -1,10 +1,10 @@
 import unittest
 
-from muvi_maker import main_logger
-from muvi_maker.core.pictures import BasePicture
-from muvi_maker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
-from muvi_maker.core.video import Video
-from muvi_maker.example_data import example_song
+from muvimaker import main_logger
+from muvimaker.core.pictures import BasePicture
+from muvimaker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
+from muvimaker.core.video import Video
+from muvimaker.example_data import example_song
 
 
 logger = main_logger.getChild(__name__)

@@ -1,9 +1,9 @@
 import unittest
 
-from muvi_maker import main_logger
-from muvi_maker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
-from muvi_maker.example_data import example_song, example_pic
-from muvi_maker.core.pictures.base_picture import BasePicture
+from muvimaker import main_logger
+from muvimaker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
+from muvimaker.example_data import example_song, example_pic
+from muvimaker.core.pictures.base_picture import BasePicture
 
 
 main_logger.setLevel('DEBUG')
