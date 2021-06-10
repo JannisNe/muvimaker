@@ -15,7 +15,7 @@ on:
   schedule:
     - cron: '0 0 1,15 * *'
 
-  relese:
+  release:
     [published]
 
   # Allows you to run this workflow manually from the Actions tab
