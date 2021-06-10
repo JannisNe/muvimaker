@@ -69,12 +69,12 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ success() }}
+        if: ${{ success() }} and 
         run: coveralls
 
   deploy:
     needs: [build]
-    if: startsWith(github.ref, 'refs/tag')
+    if: contains(github.ref, 'refs/tag')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
