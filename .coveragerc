@@ -1,9 +1,9 @@
 # .coveragerc to control coverage.py
 [run]
-source = muvi_maker
+source = muvimaker
 omit =
-    muvi_maker/editor/*
-    muvi_maker/main.py
+    muvimaker/editor/*
+    muvimaker/main.py
 
 [report]
 # Regexes for lines to exclude from consideration
