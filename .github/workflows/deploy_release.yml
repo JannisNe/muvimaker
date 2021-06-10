@@ -18,14 +18,28 @@ jobs:
     steps:
       - name: Install pypa/build
         run: python -m pip install build --user
+
       - name: Build a binary wheel and a source tarball
         run: |
           cd ..
           python -m build --sdist --wheel --outdir dist/
-      - name: Publish distribution 📦 to PyPI
+
+      - name: Publish distribution 📦 on TestPyPI
   #      run: echo 'here we will deploy to PyPi when we have a token and name hehe'
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.PYPI_TEST_TOKEN }}
+          repository_url: https://test.pypi.org/project/muvi-maker-by-jannisnecker/
+
+      - name: Test install from TestPyPi
+        run: |
+          python -m pip install --index-url https://test.pypi.org/simple/ --no-deps muvimaker
+          python -c 'import muvimaker'
+
+      - name: Publish distribution 📦 on PyPI
+        if: ${{ success() }}
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
