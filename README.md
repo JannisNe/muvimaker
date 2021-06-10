@@ -1,6 +1,6 @@
 [![CI](https://github.com/JannisNe/muvi_maker/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/JannisNe/muvi_maker/actions/workflows/continuous_integration.yml)
 [![Coverage Status](https://coveralls.io/repos/github/JannisNe/muvi_maker/badge.svg?branch=master)](https://coveralls.io/github/JannisNe/muvi_maker?branch=master)
-# MuviMaker
+# `MuviMaker`
 MuviMaker is a package that generates moving images from a sound file.
 It uses 
 * ```librosa``` to analyses soundfiles, 
@@ -23,13 +23,26 @@ Various attributes can be triggered by ``Sound``s, see ```muvi_maker/core/pictur
 * ```Video```: The object combining various ``Sound``s to make the final video file, see ``muvi_maker/core/video.py``
 
 
-### Installing MuviMaker
-Right now there is no easy way of installing MuviMaker. 
+### Installing `MuviMaker`
 
-Cloning the repository is the easiest way to get the code:
+* ##### Only using `MuviMaker`:
+
+You can install `MuviMaker` via pip
+```
+pip install muvimaker
+```
+
+* ##### Working with the source code:
+
+If you want to get the source code and work with it, you can clone the repository:
 
 ```bash
  git clone git@github.com:JannisNe/muvi_maker
+```
+
+You will have to add the installation directory to the `PYTHONPATH` to be able tu use the code:
+```
+export PYTHONPATH=/path/to/moviemaker
 ```
 
 All requirements can be install via pip:
