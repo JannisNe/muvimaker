@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master ]
     tags:
-      - *
+      - '*'
   pull_request:
     branches: [ master ]
   # run the pipeline on the 0th minute of the 0th hour of day 1 and 15 every month
