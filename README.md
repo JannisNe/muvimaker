@@ -27,6 +27,14 @@ Various attributes can be triggered by ``Sound``s, see ```muvi_maker/core/pictur
 
 ### Installing `MuviMaker`
 
+To be able to use ```moviepy``` the library ```ffmpeg``` has to be installed on your system.
+If it is not you can simply execute:
+```
+sudo apt-get update
+sudo apt-get install ffmpeg
+sudo apt-get install frei0r-plugins
+```
+
 * ##### Only using `MuviMaker`:
 
 You can install `MuviMaker` via pip
