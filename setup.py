@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 if __name__ == '__main__':
     setuptools.setup(
         name="muvimaker",
-        version="0.2.6",
+        version="0.2.6-beta",
         author="Jannis Necker",
         author_email="jannis.necker@gmail.com",
         description="A small package to generate moving pictures from sound",
