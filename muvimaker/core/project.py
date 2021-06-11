@@ -182,8 +182,11 @@ class ProjectHandler:
 
         param_info = dict()
         for t in picture_params_list:
-            attr, value = t.split(': ')
-            param_info[attr] = value
+            try:
+                attr, value = t.split(': ')
+                param_info[attr] = value
+            except ValueError as e:
+                raise PictureError(f"{name}: {e}! Unpacked {t.split(': ')} instead.")
 
         h = f"{name}{screen_size}{framerate:.7f}{hoplength:.7f}{picture_class}{json.dumps(param_info)}"
 
