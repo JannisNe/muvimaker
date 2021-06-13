@@ -12,6 +12,8 @@ logger = main_logger.getChild(__name__)
 
 class MetaPicture(BasePicture, abc.ABC):
 
+    name = 9
+
     def __init__(self, sound_dictionary, param_info, screen_size):
 
         self.pictures_class = param_info['pictures_class']
@@ -20,30 +22,57 @@ class MetaPicture(BasePicture, abc.ABC):
         self.meta_center = np.array([float(i) for i in meta_center.split(', ')]) * np.array(screen_size)
         self.meta_phase = float(param_info.get("meta_phase", '0'))
 
+        # ------------------------------------------------------------------------------------------ #
+        # ------------------------------ begin meta period ----------------------------------------- #
+        # ------------------------------------------------------------------------------------------ #
+
         # meta period attributes determine how fast the meta shape spins
         # or how fast the pictures move on the meta shape
         # given in frames or attribute of sound that determines the period
         self.meta_period = self.meta_period_on_shape = None
-        period_defaults = {'meta_period': '100', 'meta_period_on_shape': '100'}
+        meta_period_params = ['meta_period', 'meta_period_on_shape']
 
-        for attr in period_defaults.keys():
-            meta_period = param_info.pop(attr, period_defaults[attr])
+        meta_period_mode = param_info.pop('meta_period_mode', 'manual')
 
-            if isinstance(meta_period, str):
-                if meta_period in sound_dictionary:
-                    # period will be determined by a Sound instance
-                    power = sound_dictionary[meta_period].get_power()
-                    meta_min_period = param_info.pop(f'min_{attr}')
-                    p = np.minimum(power / max(power), meta_min_period)
-                    self.__setattr__(attr, p)
+        # set the period by manually giving the period in frames
+        if meta_period_mode == 'manual':
+            period_defaults = {p: '100' for p in meta_period_params}
 
-                else:
+            for attr in period_defaults.keys():
+                meta_period = param_info.pop(attr, period_defaults[attr])
+
+                if isinstance(meta_period, str):
                     length = len(list(sound_dictionary.values())[0].get_power())
                     self.__setattr__(attr, np.array([float(meta_period)] * length))
+                else:
+                    assert len(meta_period)  # this ensures that meta_period is list like
+                    self.__setattr__(attr, meta_period)
 
-            else:
-                assert len(meta_period)  # this ensures that meta_period is list like
-                self.__setattr__(attr, meta_period)
+        # estimate the period from the BPM estimation of sound
+        # the periods will be calculated so he combined movement matches the BPM
+        elif meta_period_mode == 'estimate_from_sound':
+            sound = sound_dictionary[param_info[meta_period_params[0]]]
+            meta_period_fraction = float(param_info.pop(meta_period_params[0] + '_fraction', '1'))
+            meta_period_factor = float(param_info.pop('meta_period_factor', '1'))
+
+            period = sound.get_period() * meta_period_factor
+            pd = dict()
+            pd[meta_period_params[0]] = 1 / meta_period_fraction
+            pd[meta_period_params[1]] = pd[meta_period_params[0]] / (pd[meta_period_params[0]] - 1) if meta_period_fraction != 1 else np.inf
+            length = len(list(sound_dictionary.values())[0].get_power())
+            for attr, v in pd.items():
+                val = v * period
+                logger.debug(f'setting {attr} to {val}')
+                self.__setattr__(attr, np.array([val] * length))
+
+        # estimate the period from the BPM estimation from a sound
+        # but do it separately for meta_period and meta_period_on_shape
+        elif meta_period_mode == 'estimate_from_sound_single':
+            raise NotImplementedError
+
+        # ------------------------------------------------------------------------------------------ #
+        # ------------------------------- end meta period ------------------------------------------ #
+        # ------------------------------------------------------------------------------------------ #
 
         self.centers = self.calculate_centers()
 
