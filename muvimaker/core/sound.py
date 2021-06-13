@@ -26,6 +26,7 @@ class Sound:
         self.chroma = None
         self.power = None
         self.length = None
+        self.bpm = None
         
         self.harmonic = None
         self.C_harmonic = None
@@ -58,6 +59,11 @@ class Sound:
         if isinstance(self.frange, type(None)):
             self.frange = 2 ** (np.linspace(0, len(self.C_harmonic[0]) - 1, len(self.C_harmonic[0])) / 12) * self.fmin
         return copy.copy(self.frange)
+
+    def get_bpm(self):
+        self.load_file()
+        if isinstance(self.bpm, type(None)):
+            self.bpm = librosa.beat.tempo(self.time_series, sr=self.sample_rate, hop_length=self.hop_length)
 
     def get_power(self):
         self.get_time_series()
