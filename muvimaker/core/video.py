@@ -14,7 +14,7 @@ class Video:
 
     codec_extension_map = np.array([
         ('rawvideo', 'avi'),
-        ('png', 'avi'),
+        ('png', 'mov'),
         ('mpeg4', 'mp4')
     ],
         dtype={
