@@ -27,6 +27,7 @@ class Sound:
         self.power = None
         self.length = None
         self.bpm = None
+        self.period = None
         
         self.harmonic = None
         self.C_harmonic = None
@@ -36,7 +37,9 @@ class Sound:
         self.C_percussive = None
         self.percussive_power = None
 
-        # self.get_params()
+    @property
+    def framerate(self):
+        return self.sample_rate / self.hop_length
 
     def get_params(self):
         self.load_file()
@@ -46,6 +49,12 @@ class Sound:
     def load_file(self):
         logger.debug(f'loading time series from file with sample rate {self.sample_rate}')
         self.time_series, sr = librosa.load(self.filename, sr=self.sample_rate)
+
+        if isinstance(self.sample_rate, type(None)):
+            self.sample_rate = sr
+        elif self.sample_rate != sr:
+            raise SoundError(f'librosa sample rate {sr} is not the same as given sample rate {self.sample_rate}!')
+
         self.length = len(self.time_series) / sr
 
     def get_length(self):
@@ -63,7 +72,18 @@ class Sound:
     def get_bpm(self):
         self.load_file()
         if isinstance(self.bpm, type(None)):
-            self.bpm = librosa.beat.tempo(self.time_series, sr=self.sample_rate, hop_length=self.hop_length)
+            logger.debug('estimaing bpm')
+            self.bpm = float(librosa.beat.tempo(self.time_series, sr=self.sample_rate, hop_length=self.hop_length))
+            logger.debug(f'estimated {self.bpm} bpm')
+        return copy.copy(self.bpm)
+
+    def get_period(self):
+        self.get_bpm()
+        if isinstance(self.period, type(None)):
+            logger.debug('estimating period')
+            self.period = self.framerate / (self.get_bpm() / 60)
+            logger.debug(f'estimated a period of {self.period}')
+        return copy.copy(self.period)
 
     def get_power(self):
         self.get_time_series()
@@ -144,6 +164,3 @@ class Sound:
         tone_relation = self.get_tone_relation()
         squared_tone_relation = np.array([t**2 / sum(t**2) for t in tone_relation])
         return copy.copy(squared_tone_relation)
-        
-    
-    
