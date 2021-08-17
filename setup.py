@@ -31,7 +31,7 @@ if __name__ == '__main__':
             "librosa==0.8.1",
             "numpy==1.21.1",
             "matplotlib==3.4.2",
-            "jupyterlab==3.1.1",
+            "jupyterlab==3.1.7",
             "pillow==8.3.1",
             "gizeh==0.1.11",
             "ffmpeg==1.4",
