@@ -29,7 +29,7 @@ if __name__ == '__main__':
         install_requires=[
             "moviepy==1.0.3",
             "librosa==0.8.1",
-            "numpy==1.21.1",
+            "numpy==1.21.2",
             "matplotlib==3.4.3",
             "jupyterlab==3.1.1",
             "pillow==8.3.1",
