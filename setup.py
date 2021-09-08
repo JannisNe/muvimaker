@@ -36,7 +36,7 @@ if __name__ == '__main__':
             "gizeh==0.1.11",
             "ffmpeg==1.4",
             "coveralls",
-            "setuptools==58.0.2",
+            "setuptools==58.0.3",
         ],
         package_data={'muvimaker': [
             'example_data/example_pic.jpg',
