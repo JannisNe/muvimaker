@@ -8,4 +8,4 @@ gizeh==0.1.11
 ffmpeg==1.4
 coveralls
 setuptools==58.2.0
-scikit-image==0.17.2
+scikit-image==0.18.3
