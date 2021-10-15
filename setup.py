@@ -32,7 +32,7 @@ if __name__ == '__main__':
             "numpy==1.21.2",
             "matplotlib==3.4.3",
             "jupyterlab==3.1.4",
-            "pillow==8.3.2",
+            "pillow==8.4.0",
             "gizeh==0.1.11",
             "ffmpeg==1.4",
             "coveralls",
