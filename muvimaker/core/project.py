@@ -72,6 +72,10 @@ class ProjectHandler:
         return f"{self.storage_dir}/analyser_results.pkl"
 
     @property
+    def face_reco_results_file(self):
+        return f"{self.storage_dir}/face_reco_cache.pkl"
+
+    @property
     def directories(self):
         return [self.home_directory,
                 self.indir, self.outdir, self.storage_dir,
@@ -181,9 +185,13 @@ class ProjectHandler:
         picture_class, picture_params_list, ind = self.pictures[name]
 
         param_info = dict()
+
+        if BasePicture.subclasses[picture_class].needs_face_reco_cache:
+            param_info['face_reco_cache_file'] = self.face_reco_results_file
+
         for t in picture_params_list:
             try:
-                attr, value = t.split(': ')
+                attr, value = t.split(': ', 1)
                 param_info[attr] = value
             except ValueError as e:
                 raise PictureError(f"{name}: {e}! Unpacked {t.split(': ')} instead.")
