@@ -8,6 +8,7 @@ logger = main_logger.getChild(__name__)
 class BasePicture(abc.ABC):
 
     subclasses = {}
+    needs_face_reco_cache = False
 
     def __init__(self, sound_dictionary, param_info, screen_size):
 
