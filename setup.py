@@ -36,7 +36,7 @@ if __name__ == '__main__':
             "gizeh==0.1.11",
             "ffmpeg==1.4",
             "coveralls",
-            "setuptools==58.2.0",
+            "setuptools==59.7.0",
             "scikit-image==0.18.3",
             "face_recognition == 1.3.0"
         ],
