@@ -37,7 +37,8 @@ if __name__ == '__main__':
             "ffmpeg==1.4",
             "coveralls",
             "setuptools==58.2.0",
-            "scikit-image==0.18.3"
+            "scikit-image==0.18.3",
+            "face_recognition == 1.3.0"
         ],
         package_data={'muvimaker': [
             'example_data/example_pic.jpg',
