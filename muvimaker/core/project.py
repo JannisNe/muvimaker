@@ -176,6 +176,17 @@ class ProjectHandler:
             name: self.get_sound(name, hoplength, framerate)
             for name in self.sound_files.keys()
         }
+
+        main_length = self.get_sound('main', hoplength, framerate).get_length()
+        _shorter_than_main = np.array([s.get_length() < main_length for s in d.values()])
+        if np.any(_shorter_than_main):
+            _shorter_sounds = np.array(list(d.values()))[_shorter_than_main]
+            _shorter_sound_files = [s.filename for s in _shorter_sounds]
+            txt = 'At least one sound shorter than main:'
+            for fn in _shorter_sound_files:
+                txt += f'\n\n{fn}'
+            raise SoundError(txt)
+
         return d
 
     # ==========================================  Pictures  ========================================== #
