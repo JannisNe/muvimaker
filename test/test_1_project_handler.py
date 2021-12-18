@@ -42,7 +42,7 @@ for pic_class in BasePicture.subclasses.keys():
     if 'picture_from_video' in pic_class:
         pictures[n][1].append(f'video_file: {example_video}')
 
-    if 'face_recognition_picture':
+    if 'face_recognition_picture' in pic_class:
         pictures[n][1] = [
             'pictures_class: picture_from_video',
             f'video_file: {example_video}',
