@@ -10,4 +10,3 @@ from .pre_computed_picture import PreComputedPicture
 from .meta_regular_polygon import MetaRegularPolygon
 from .picture_from_file import PictureFromFile
 from .picture_from_video import PictureFromVideo
-from .face_recognition_picture import MetaPictureFaceRecognition
