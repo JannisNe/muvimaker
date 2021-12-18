@@ -42,14 +42,19 @@ for pic_class in BasePicture.subclasses.keys():
     if 'picture_from_video' in pic_class:
         pictures[n][1].append(f'video_file: {example_video}')
 
-    if 'face_recognition_picture' in pic_class:
-        pictures[n][1] = [
-            'pictures_class: picture_from_video',
-            f'video_file: {example_video}',
-            'radius_0_left_eye: main',
-            'max_radius_0_left_eye_0: 0.4',
-            'radius_0_right_eye: main',
-            'max_radius_0_right_eye: 0.4',
+        j += 1
+        n = f'{j}: {pic_class} bubble warp'
+        pictures[n] = [
+            pic_class,
+            [f'video_file: {example_video}',
+             'bubble_warp: True',
+             'bubble_warp_mode: face_reco',
+             'bubble_warp_face_reco_video_nickname: baby',
+             'bubble_warp_face_map: {"baby": [0]}',
+             'bubble_warp_radius_baby: main',
+             'bubble_warp_max_radius_jannis: 0.8',
+             ],
+            f'{j}'
         ]
 
     j += 1
@@ -66,6 +71,10 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_a_project_handler(self):
         logger.info('\n\n   testing project handler\n\n')
+
+        logger.info('    testing face recogniser    \n')
+        ph.recognise_faces(example_video, 'baby')
+
         classes = [l[0] for l in pictures.values()]
         logger.debug(f'testing classes {classes}')
         video = ph.get_video(
