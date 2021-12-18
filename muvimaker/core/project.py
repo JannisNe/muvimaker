@@ -6,6 +6,7 @@ from muvimaker import main_logger, mv_scratch_key
 from muvimaker.core.sound import Sound, SoundError
 from muvimaker.core.pictures import BasePicture, PictureError
 from muvimaker.core.video import Video
+from muvimaker.core.face_recogniser import FaceRecogniser
 
 
 logger = main_logger.getChild(__name__)
@@ -38,6 +39,7 @@ class ProjectHandler:
 
         self._cached_sounds = dict()
         self._cached_pictures = dict()
+        self._face_recogniser = None
 
     @property
     def indir(self):
@@ -72,8 +74,14 @@ class ProjectHandler:
         return f"{self.storage_dir}/analyser_results.pkl"
 
     @property
-    def face_reco_results_file(self):
-        return f"{self.storage_dir}/face_reco_cache.pkl"
+    def face_reco_cache_dir(self):
+        return f"{self.storage_dir}/face_reco_cache"
+
+    @property
+    def face_recogniser(self):
+        if isinstance(self._face_recogniser, type(None)):
+            self._face_recogniser = FaceRecogniser(self.face_reco_cache_dir)
+        return self._face_recogniser
 
     @property
     def directories(self):
@@ -198,7 +206,7 @@ class ProjectHandler:
         param_info = dict()
 
         if BasePicture.subclasses[picture_class].needs_face_reco_cache:
-            param_info['face_reco_cache_file'] = self.face_reco_results_file
+            param_info['face_reco_cache_file'] = self.face_recogniser.cache_file
 
         for t in picture_params_list:
             try:
@@ -288,3 +296,8 @@ class ProjectHandler:
             
         video.make_video(filename=filename, codec=codec)
         return filename
+
+    # =======================================  Face Recogniser  ======================================= #
+
+    def recognise_faces(self, video_file, video_nickname):
+        self.face_recogniser.recognise_faces(video_file, video_nickname)
