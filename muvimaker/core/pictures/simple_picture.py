@@ -34,23 +34,20 @@ class SimplePicture(BasePicture, abc.ABC):
         self.center = np.array(screen_size) * rel_center
 
         # ---------------------- Radius ------------------------ #
-        radii = ['radius', 'radius_spread']
-        self.radius = self.radius_spread = None
+        radii = param_info.get('radii', ['radius', 'radius_spread'])
+        logger.debug(f'radii: {radii}')
+        self.radii = radii
 
-        defaults = {
-            # Radius of shape
-            'radius': None,
-            'max_radius': 0.5,
-            'radius_smooth': 1,
-            'radius_saturation_threshold': 1,
-            'radius_sensitive_threshold': 0,
-            # Radius of pixel spread
-            'radius_spread': None,
-            'max_radius_spread': 0.5,
-            'radius_spread_smooth': 1,
-            'radius_spread_saturation_threshold': 1,
-            'radius_spread_sensitive_threshold': 0
-        }
+        defaults = dict()
+        for r in radii:
+            update = {
+                r: None,
+                f'max_{r}': 0.5,
+                f'{r}_smooth': 1,
+                f'{r}_saturation_threshold': 1,
+                f'{r}_sensitive_threshold': 0,
+            }
+            defaults.update(update)
 
         for attr in radii:
             radius_sound_name = param_info.get(attr, defaults[attr])
@@ -103,7 +100,9 @@ class SimplePicture(BasePicture, abc.ABC):
             # scale so the maximum of radius is the given value
             radius = radius / max(radius) * max_radius
 
+            logger.debug(f'setting {attr}')
             self.__setattr__(attr, radius)
+            logger.debug(f'has {attr}: {hasattr(self, attr)}')
 
     def postprocess(self, frame, ind):
         """
@@ -116,7 +115,7 @@ class SimplePicture(BasePicture, abc.ABC):
         if not isinstance(frame, PIL.Image.Image):
             frame = PIL.Image.fromarray(frame)
 
-        if not isinstance(self.radius_spread, type(None)):
+        if hasattr(self, 'radius_spread') and not isinstance(self.radius_spread, type(None)):
             frame = frame.effect_spread(self.radius_spread[ind])
 
         return frame

@@ -2,7 +2,7 @@ import unittest
 
 from muvimaker import main_logger
 from muvimaker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
-from muvimaker.example_data import example_song, example_pic
+from muvimaker.example_data import example_song, example_pic, example_video
 from muvimaker.core.pictures.base_picture import BasePicture
 
 
@@ -39,6 +39,24 @@ for pic_class in BasePicture.subclasses.keys():
         pictures[n][1].append(f'filename: {example_pic}')
         pictures[n][1].append('scale: 0.01')
 
+    if 'picture_from_video' in pic_class:
+        pictures[n][1].append(f'video_file: {example_video}')
+
+        j += 1
+        n = f'{j}: {pic_class} bubble warp'
+        pictures[n] = [
+            pic_class,
+            [f'video_file: {example_video}',
+             'bubble_warp: True',
+             'bubble_warp_mode: face_reco',
+             'bubble_warp_face_reco_video_nickname: baby',
+             'bubble_warp_face_map: {"baby": [0]}',
+             'bubble_warp_radius_baby: main',
+             'bubble_warp_max_radius_jannis: 0.8',
+             ],
+            f'{j}'
+        ]
+
     j += 1
 
 ph_name = 'test_ph_handler'
@@ -53,6 +71,10 @@ class TestProjectHandler(unittest.TestCase):
 
     def test_a_project_handler(self):
         logger.info('\n\n   testing project handler\n\n')
+
+        logger.info('    testing face recogniser    \n')
+        ph.recognise_faces(example_video, 'baby')
+
         classes = [l[0] for l in pictures.values()]
         logger.debug(f'testing classes {classes}')
         video = ph.get_video(

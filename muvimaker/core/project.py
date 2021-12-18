@@ -6,6 +6,7 @@ from muvimaker import main_logger, mv_scratch_key
 from muvimaker.core.sound import Sound, SoundError
 from muvimaker.core.pictures import BasePicture, PictureError
 from muvimaker.core.video import Video
+from muvimaker.core.face_recogniser import FaceRecogniser
 
 
 logger = main_logger.getChild(__name__)
@@ -38,6 +39,7 @@ class ProjectHandler:
 
         self._cached_sounds = dict()
         self._cached_pictures = dict()
+        self._face_recogniser = None
 
     @property
     def indir(self):
@@ -70,6 +72,16 @@ class ProjectHandler:
     @property
     def analyser_results_file(self):
         return f"{self.storage_dir}/analyser_results.pkl"
+
+    @property
+    def face_reco_cache_dir(self):
+        return f"{self.storage_dir}/face_reco_cache"
+
+    @property
+    def face_recogniser(self):
+        if isinstance(self._face_recogniser, type(None)):
+            self._face_recogniser = FaceRecogniser(self.face_reco_cache_dir)
+        return self._face_recogniser
 
     @property
     def directories(self):
@@ -172,6 +184,17 @@ class ProjectHandler:
             name: self.get_sound(name, hoplength, framerate)
             for name in self.sound_files.keys()
         }
+
+        main_length = self.get_sound('main', hoplength, framerate).get_length()
+        _shorter_than_main = np.array([s.get_length() < main_length for s in d.values()])
+        if np.any(_shorter_than_main):
+            _shorter_sounds = np.array(list(d.values()))[_shorter_than_main]
+            _shorter_sound_files = [s.filename for s in _shorter_sounds]
+            txt = 'At least one sound shorter than main:'
+            for fn in _shorter_sound_files:
+                txt += f'\n\n{fn}'
+            raise SoundError(txt)
+
         return d
 
     # ==========================================  Pictures  ========================================== #
@@ -181,9 +204,13 @@ class ProjectHandler:
         picture_class, picture_params_list, ind = self.pictures[name]
 
         param_info = dict()
+
+        if BasePicture.subclasses[picture_class].needs_face_reco_cache:
+            param_info['face_reco_cache_file'] = self.face_recogniser.cache_file
+
         for t in picture_params_list:
             try:
-                attr, value = t.split(': ')
+                attr, value = t.split(': ', 1)
                 param_info[attr] = value
             except ValueError as e:
                 raise PictureError(f"{name}: {e}! Unpacked {t.split(': ')} instead.")
@@ -269,3 +296,8 @@ class ProjectHandler:
             
         video.make_video(filename=filename, codec=codec)
         return filename
+
+    # =======================================  Face Recogniser  ======================================= #
+
+    def recognise_faces(self, video_file, video_nickname):
+        self.face_recogniser.recognise_faces(video_file, video_nickname)
