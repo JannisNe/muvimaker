@@ -2,7 +2,7 @@ import unittest
 
 from muvimaker import main_logger
 from muvimaker.core.project import ProjectHandler, standard_screen_size, standard_framerate, standard_hop_length
-from muvimaker.example_data import example_song, example_pic
+from muvimaker.example_data import example_song, example_pic, example_video
 from muvimaker.core.pictures.base_picture import BasePicture
 
 
@@ -38,6 +38,19 @@ for pic_class in BasePicture.subclasses.keys():
     if 'picture_from_file' in pic_class:
         pictures[n][1].append(f'filename: {example_pic}')
         pictures[n][1].append('scale: 0.01')
+
+    if 'picture_from_video' in pic_class:
+        pictures[n][1].append(f'video_file: {example_video}')
+
+    if 'face_recognition_picture':
+        pictures[n][1] = [
+            'pictures_class: picture_from_video',
+            f'video_file: {example_video}',
+            'radius_0_left_eye: main',
+            'max_radius_0_left_eye_0: 0.4',
+            'radius_0_right_eye: main',
+            'max_radius_0_right_eye: 0.4',
+        ]
 
     j += 1
 
